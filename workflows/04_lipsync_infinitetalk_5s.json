@@ -1,0 +1,428 @@
+{
+ "1": {
+  "class_type": "UnetLoaderGGUF",
+  "inputs": {
+   "unet_name": "wan2.1-i2v-14b-480p-Q5_K_M.gguf"
+  },
+  "_meta": {
+   "title": "Wan2.1 I2V 14B 480p (GGUF)"
+  }
+ },
+ "2": {
+  "class_type": "LoraLoaderModelOnly",
+  "inputs": {
+   "model": [
+    "1",
+    0
+   ],
+   "lora_name": "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+   "strength_model": 1.0
+  },
+  "_meta": {
+   "title": "LightX2V step-distill LoRA"
+  }
+ },
+ "3": {
+  "class_type": "ModelPatchLoader",
+  "inputs": {
+   "name": "wan2.1_infiniteTalk_single_fp16.safetensors"
+  },
+  "_meta": {
+   "title": "InfiniteTalk patch (single speaker)"
+  }
+ },
+ "4": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+   "type": "wan",
+   "device": "default"
+  },
+  "_meta": {
+   "title": "Load umt5 (fp8)"
+  }
+ },
+ "5": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "wan_2.1_vae.safetensors"
+  },
+  "_meta": {
+   "title": "Load Wan 2.1 VAE"
+  }
+ },
+ "6": {
+  "class_type": "AudioEncoderLoader",
+  "inputs": {
+   "audio_encoder_name": "wav2vec2-chinese-base_fp16.safetensors"
+  },
+  "_meta": {
+   "title": "Load wav2vec2 audio encoder"
+  }
+ },
+ "7": {
+  "class_type": "LoadAudio",
+  "inputs": {
+   "audio": "speech.wav"
+  },
+  "_meta": {
+   "title": "Speech audio"
+  }
+ },
+ "8": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "avatar.png"
+  },
+  "_meta": {
+   "title": "Avatar image"
+  }
+ },
+ "9": {
+  "class_type": "AudioEncoderEncode",
+  "inputs": {
+   "audio_encoder": [
+    "6",
+    0
+   ],
+   "audio": [
+    "7",
+    0
+   ]
+  }
+ },
+ "10": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "The character talks directly to the camera with natural expressive lip movements, subtle head nods and small hand gestures, blinking naturally, static camera, stylized 3D animation, smooth expressive facial animation",
+   "clip": [
+    "4",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Motion prompt"
+  }
+ },
+ "11": {
+  "class_type": "ConditioningZeroOut",
+  "inputs": {
+   "conditioning": [
+    "10",
+    0
+   ]
+  }
+ },
+ "12": {
+  "class_type": "KSamplerSelect",
+  "inputs": {
+   "sampler_name": "euler"
+  }
+ },
+ "13": {
+  "class_type": "WanInfiniteTalkToVideo",
+  "inputs": {
+   "model": [
+    "2",
+    0
+   ],
+   "model_patch": [
+    "3",
+    0
+   ],
+   "positive": [
+    "10",
+    0
+   ],
+   "negative": [
+    "11",
+    0
+   ],
+   "vae": [
+    "5",
+    0
+   ],
+   "width": 480,
+   "height": 832,
+   "length": 81,
+   "audio_encoder_output_1": [
+    "9",
+    0
+   ],
+   "motion_frame_count": 9,
+   "audio_scale": 1.0,
+   "start_image": [
+    "8",
+    0
+   ],
+   "mode": "single_speaker"
+  },
+  "_meta": {
+   "title": "InfiniteTalk base window"
+  }
+ },
+ "14": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "13",
+    0
+   ],
+   "positive": [
+    "13",
+    1
+   ],
+   "negative": [
+    "13",
+    2
+   ],
+   "cfg": 1.0
+  }
+ },
+ "15": {
+  "class_type": "BasicScheduler",
+  "inputs": {
+   "model": [
+    "13",
+    0
+   ],
+   "scheduler": "normal",
+   "steps": 6,
+   "denoise": 1.0
+  }
+ },
+ "16": {
+  "class_type": "RandomNoise",
+  "inputs": {
+   "noise_seed": 2026
+  }
+ },
+ "17": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "16",
+    0
+   ],
+   "guider": [
+    "14",
+    0
+   ],
+   "sampler": [
+    "12",
+    0
+   ],
+   "sigmas": [
+    "15",
+    0
+   ],
+   "latent_image": [
+    "13",
+    3
+   ]
+  }
+ },
+ "18": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "17",
+    0
+   ],
+   "vae": [
+    "5",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "19": {
+  "class_type": "WanInfiniteTalkToVideo",
+  "inputs": {
+   "model": [
+    "2",
+    0
+   ],
+   "model_patch": [
+    "3",
+    0
+   ],
+   "positive": [
+    "10",
+    0
+   ],
+   "negative": [
+    "11",
+    0
+   ],
+   "vae": [
+    "5",
+    0
+   ],
+   "width": 480,
+   "height": 832,
+   "length": 49,
+   "audio_encoder_output_1": [
+    "9",
+    0
+   ],
+   "motion_frame_count": 9,
+   "audio_scale": 1.0,
+   "start_image": [
+    "8",
+    0
+   ],
+   "mode": "single_speaker",
+   "previous_frames": [
+    "18",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "InfiniteTalk extend window 1"
+  }
+ },
+ "20": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "19",
+    0
+   ],
+   "positive": [
+    "19",
+    1
+   ],
+   "negative": [
+    "19",
+    2
+   ],
+   "cfg": 1.0
+  }
+ },
+ "21": {
+  "class_type": "BasicScheduler",
+  "inputs": {
+   "model": [
+    "19",
+    0
+   ],
+   "scheduler": "normal",
+   "steps": 6,
+   "denoise": 1.0
+  }
+ },
+ "22": {
+  "class_type": "RandomNoise",
+  "inputs": {
+   "noise_seed": 2027
+  }
+ },
+ "23": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "22",
+    0
+   ],
+   "guider": [
+    "20",
+    0
+   ],
+   "sampler": [
+    "12",
+    0
+   ],
+   "sigmas": [
+    "21",
+    0
+   ],
+   "latent_image": [
+    "19",
+    3
+   ]
+  }
+ },
+ "24": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "23",
+    0
+   ],
+   "vae": [
+    "5",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "25": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "24",
+    0
+   ],
+   "batch_index": 9,
+   "length": 4096
+  },
+  "_meta": {
+   "title": "Drop overlap frames"
+  }
+ },
+ "26": {
+  "class_type": "ImageBatch",
+  "inputs": {
+   "image1": [
+    "18",
+    0
+   ],
+   "image2": [
+    "25",
+    0
+   ]
+  }
+ },
+ "27": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "26",
+    0
+   ],
+   "fps": 25.0,
+   "audio": [
+    "7",
+    0
+   ]
+  }
+ },
+ "28": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "27",
+    0
+   ],
+   "filename_prefix": "mc/talking",
+   "format": "mp4",
+   "format.codec": "h264"
+  },
+  "_meta": {
+   "title": "Save talking clip"
+  }
+ }
+}

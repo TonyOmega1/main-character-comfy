@@ -1,0 +1,551 @@
+{
+ "1": {
+  "class_type": "LoadVideo",
+  "inputs": {
+   "file": "clip.mp4"
+  },
+  "_meta": {
+   "title": "Reference motion clip (only its pose is used)"
+  }
+ },
+ "2": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "1",
+    0
+   ]
+  }
+ },
+ "3": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "avatar.png"
+  },
+  "_meta": {
+   "title": "You, in the new scene"
+  }
+ },
+ "4": {
+  "class_type": "ImageScale",
+  "inputs": {
+   "image": [
+    "3",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "width": 480,
+   "height": 832,
+   "crop": "center"
+  }
+ },
+ "5": {
+  "class_type": "LoadVideo",
+  "inputs": {
+   "file": "carry.mp4"
+  },
+  "_meta": {
+   "title": "Previous chunk's last frames (seam)"
+  }
+ },
+ "6": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "5",
+    0
+   ]
+  }
+ },
+ "7": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "rt_detr_v4-x-hgnet_fp16.safetensors",
+   "weight_dtype": "default"
+  },
+  "_meta": {
+   "title": "Load RT-DETR v4"
+  }
+ },
+ "8": {
+  "class_type": "RTDETR_detect",
+  "inputs": {
+   "image": [
+    "2",
+    0
+   ],
+   "model": [
+    "7",
+    0
+   ],
+   "threshold": 0.5,
+   "class_name": "person",
+   "max_detections": 1
+  }
+ },
+ "9": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "sdpose_wholebody_fp16.safetensors"
+  },
+  "_meta": {
+   "title": "Load SDPose wholebody"
+  }
+ },
+ "10": {
+  "class_type": "SDPoseKeypointExtractor",
+  "inputs": {
+   "model": [
+    "9",
+    0
+   ],
+   "vae": [
+    "9",
+    2
+   ],
+   "image": [
+    "2",
+    0
+   ],
+   "batch_size": 16,
+   "bboxes": [
+    "8",
+    0
+   ]
+  }
+ },
+ "11": {
+  "class_type": "SDPoseDrawKeypoints",
+  "inputs": {
+   "keypoints": [
+    "10",
+    0
+   ],
+   "draw_body": true,
+   "draw_hands": true,
+   "draw_face": false,
+   "draw_feet": false,
+   "stick_width": 4,
+   "face_point_size": 3,
+   "score_threshold": 0.3,
+   "draw_head": true
+  },
+  "_meta": {
+   "title": "Pose video"
+  }
+ },
+ "12": {
+  "class_type": "SDPoseFaceBBoxes",
+  "inputs": {
+   "keypoints": [
+    "10",
+    0
+   ],
+   "scale": 1.5,
+   "force_square": true
+  }
+ },
+ "13": {
+  "class_type": "CropByBBoxes",
+  "inputs": {
+   "image": [
+    "2",
+    0
+   ],
+   "bboxes": [
+    "12",
+    0
+   ],
+   "output_width": 512,
+   "output_height": 512,
+   "padding": 0,
+   "keep_aspect": "stretch"
+  },
+  "_meta": {
+   "title": "Face video (512)"
+  }
+ },
+ "14": {
+  "class_type": "UnetLoaderGGUF",
+  "inputs": {
+   "unet_name": "Wan2.2-Animate-14B-Q4_K_M.gguf"
+  },
+  "_meta": {
+   "title": "Wan2.2 Animate 14B (GGUF)"
+  }
+ },
+ "15": {
+  "class_type": "LoraLoaderModelOnly",
+  "inputs": {
+   "model": [
+    "14",
+    0
+   ],
+   "lora_name": "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+   "strength_model": 1.0
+  },
+  "_meta": {
+   "title": "LightX2V step-distill LoRA"
+  }
+ },
+ "16": {
+  "class_type": "ModelSamplingSD3",
+  "inputs": {
+   "model": [
+    "15",
+    0
+   ],
+   "shift": 8.0
+  }
+ },
+ "17": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+   "type": "wan",
+   "device": "default"
+  },
+  "_meta": {
+   "title": "Load umt5 (fp8)"
+  }
+ },
+ "18": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "wan_2.1_vae.safetensors"
+  },
+  "_meta": {
+   "title": "Load Wan 2.1 VAE"
+  }
+ },
+ "19": {
+  "class_type": "CLIPVisionLoader",
+  "inputs": {
+   "clip_name": "clip_vision_h.safetensors"
+  },
+  "_meta": {
+   "title": "Load CLIP Vision H"
+  }
+ },
+ "20": {
+  "class_type": "CLIPVisionEncode",
+  "inputs": {
+   "clip_vision": [
+    "19",
+    0
+   ],
+   "image": [
+    "4",
+    0
+   ],
+   "crop": "none"
+  }
+ },
+ "21": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "luxury hotel hallway at night. The person performs the movements of the pose sequence.",
+   "clip": [
+    "17",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Prompt"
+  }
+ },
+ "22": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走",
+   "clip": [
+    "17",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Negative prompt"
+  }
+ },
+ "23": {
+  "class_type": "WanAnimateToVideo",
+  "inputs": {
+   "positive": [
+    "21",
+    0
+   ],
+   "negative": [
+    "22",
+    0
+   ],
+   "vae": [
+    "18",
+    0
+   ],
+   "width": 480,
+   "height": 832,
+   "length": 77,
+   "batch_size": 1,
+   "continue_motion_max_frames": 5,
+   "video_frame_offset": 5,
+   "clip_vision_output": [
+    "20",
+    0
+   ],
+   "reference_image": [
+    "4",
+    0
+   ],
+   "pose_video": [
+    "11",
+    0
+   ],
+   "face_video": [
+    "13",
+    0
+   ],
+   "continue_motion": [
+    "6",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Animate window 1 (continues the previous chunk)"
+  }
+ },
+ "24": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "16",
+    0
+   ],
+   "seed": 2026,
+   "steps": 6,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "positive": [
+    "23",
+    0
+   ],
+   "negative": [
+    "23",
+    1
+   ],
+   "latent_image": [
+    "23",
+    2
+   ],
+   "denoise": 1.0
+  }
+ },
+ "25": {
+  "class_type": "TrimVideoLatent",
+  "inputs": {
+   "samples": [
+    "24",
+    0
+   ],
+   "trim_amount": [
+    "23",
+    3
+   ]
+  }
+ },
+ "26": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "25",
+    0
+   ],
+   "vae": [
+    "18",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "27": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "26",
+    0
+   ],
+   "batch_index": [
+    "23",
+    4
+   ],
+   "length": 4096
+  }
+ },
+ "28": {
+  "class_type": "WanAnimateToVideo",
+  "inputs": {
+   "positive": [
+    "21",
+    0
+   ],
+   "negative": [
+    "22",
+    0
+   ],
+   "vae": [
+    "18",
+    0
+   ],
+   "width": 480,
+   "height": 832,
+   "length": 77,
+   "batch_size": 1,
+   "continue_motion_max_frames": 5,
+   "video_frame_offset": [
+    "23",
+    5
+   ],
+   "clip_vision_output": [
+    "20",
+    0
+   ],
+   "reference_image": [
+    "4",
+    0
+   ],
+   "pose_video": [
+    "11",
+    0
+   ],
+   "face_video": [
+    "13",
+    0
+   ],
+   "continue_motion": [
+    "27",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Animate window 2 (extend)"
+  }
+ },
+ "29": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "16",
+    0
+   ],
+   "seed": 2027,
+   "steps": 6,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "positive": [
+    "28",
+    0
+   ],
+   "negative": [
+    "28",
+    1
+   ],
+   "latent_image": [
+    "28",
+    2
+   ],
+   "denoise": 1.0
+  }
+ },
+ "30": {
+  "class_type": "TrimVideoLatent",
+  "inputs": {
+   "samples": [
+    "29",
+    0
+   ],
+   "trim_amount": [
+    "28",
+    3
+   ]
+  }
+ },
+ "31": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "30",
+    0
+   ],
+   "vae": [
+    "18",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "32": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "31",
+    0
+   ],
+   "batch_index": [
+    "28",
+    4
+   ],
+   "length": 4096
+  }
+ },
+ "33": {
+  "class_type": "ImageBatch",
+  "inputs": {
+   "image1": [
+    "27",
+    0
+   ],
+   "image2": [
+    "32",
+    0
+   ]
+  }
+ },
+ "34": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "33",
+    0
+   ],
+   "fps": 16.0
+  }
+ },
+ "35": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "34",
+    0
+   ],
+   "filename_prefix": "mc/vibe",
+   "format": "mp4",
+   "format.codec": "h264"
+  },
+  "_meta": {
+   "title": "Save your new-scene take"
+  }
+ }
+}

@@ -1,0 +1,274 @@
+{
+ "1": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "flux-2-klein-4b.safetensors",
+   "weight_dtype": "default"
+  },
+  "_meta": {
+   "title": "Load FLUX.2 klein 4B (distilled)"
+  }
+ },
+ "2": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "qwen_3_4b.safetensors",
+   "type": "flux2",
+   "device": "default"
+  },
+  "_meta": {
+   "title": "Load Qwen3 4B"
+  }
+ },
+ "3": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "flux2-vae.safetensors"
+  },
+  "_meta": {
+   "title": "Load FLUX.2 VAE"
+  }
+ },
+ "4": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "Turn the two people from the images into a stylized 3D animated movie character: big expressive eyes, smooth subsurface-scattered skin, soft rounded features, keep their hairstyle, hair color, skin tone, outfit and recognizable face shape. upper body medium close-up, centered, looking straight into the camera, mouth gently closed, relaxed natural expression, vertical 9:16 composition, soft key light, clean uncluttered background, cozy colorful room background with warm bokeh. Both people side by side facing the camera, podcast desk with two microphones.",
+   "clip": [
+    "2",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Avatar prompt"
+  }
+ },
+ "5": {
+  "class_type": "ConditioningZeroOut",
+  "inputs": {
+   "conditioning": [
+    "4",
+    0
+   ]
+  }
+ },
+ "6": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "photo.png"
+  },
+  "_meta": {
+   "title": "Your photo"
+  }
+ },
+ "7": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "6",
+    0
+   ],
+   "upscale_method": "nearest-exact",
+   "megapixels": 1.0,
+   "resolution_steps": 1
+  }
+ },
+ "8": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "7",
+    0
+   ],
+   "vae": [
+    "3",
+    0
+   ]
+  }
+ },
+ "9": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "4",
+    0
+   ],
+   "latent": [
+    "8",
+    0
+   ]
+  }
+ },
+ "10": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "5",
+    0
+   ],
+   "latent": [
+    "8",
+    0
+   ]
+  }
+ },
+ "11": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "photo_b.png"
+  },
+  "_meta": {
+   "title": "Second photo"
+  }
+ },
+ "12": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "11",
+    0
+   ],
+   "upscale_method": "nearest-exact",
+   "megapixels": 1.0,
+   "resolution_steps": 1
+  }
+ },
+ "13": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "12",
+    0
+   ],
+   "vae": [
+    "3",
+    0
+   ]
+  }
+ },
+ "14": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "9",
+    0
+   ],
+   "latent": [
+    "13",
+    0
+   ]
+  }
+ },
+ "15": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "10",
+    0
+   ],
+   "latent": [
+    "13",
+    0
+   ]
+  }
+ },
+ "16": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "1",
+    0
+   ],
+   "positive": [
+    "14",
+    0
+   ],
+   "negative": [
+    "15",
+    0
+   ],
+   "cfg": 1.0
+  }
+ },
+ "17": {
+  "class_type": "RandomNoise",
+  "inputs": {
+   "noise_seed": 77
+  }
+ },
+ "18": {
+  "class_type": "KSamplerSelect",
+  "inputs": {
+   "sampler_name": "euler"
+  }
+ },
+ "19": {
+  "class_type": "Flux2Scheduler",
+  "inputs": {
+   "steps": 4,
+   "width": 1088,
+   "height": 1920
+  }
+ },
+ "20": {
+  "class_type": "EmptyFlux2LatentImage",
+  "inputs": {
+   "width": 1088,
+   "height": 1920,
+   "batch_size": 1
+  },
+  "_meta": {
+   "title": "Size (9:16)"
+  }
+ },
+ "21": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "17",
+    0
+   ],
+   "guider": [
+    "16",
+    0
+   ],
+   "sampler": [
+    "18",
+    0
+   ],
+   "sigmas": [
+    "19",
+    0
+   ],
+   "latent_image": [
+    "20",
+    0
+   ]
+  }
+ },
+ "22": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "21",
+    0
+   ],
+   "vae": [
+    "3",
+    0
+   ]
+  }
+ },
+ "23": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "22",
+    0
+   ],
+   "filename_prefix": "mc/avatar"
+  },
+  "_meta": {
+   "title": "Save avatar"
+  }
+ }
+}

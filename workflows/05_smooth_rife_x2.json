@@ -1,0 +1,68 @@
+{
+ "1": {
+  "class_type": "LoadVideo",
+  "inputs": {
+   "file": "talking.mp4"
+  },
+  "_meta": {
+   "title": "Talking clip"
+  }
+ },
+ "2": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "1",
+    0
+   ]
+  }
+ },
+ "3": {
+  "class_type": "FrameInterpolationModelLoader",
+  "inputs": {
+   "model_name": "rife_v4.26.safetensors"
+  },
+  "_meta": {
+   "title": "Load RIFE"
+  }
+ },
+ "4": {
+  "class_type": "FrameInterpolate",
+  "inputs": {
+   "interp_model": [
+    "3",
+    0
+   ],
+   "images": [
+    "2",
+    0
+   ],
+   "multiplier": 2
+  }
+ },
+ "5": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "4",
+    0
+   ],
+   "fps": 50.0
+  }
+ },
+ "6": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "5",
+    0
+   ],
+   "filename_prefix": "mc/smooth",
+   "format": "mp4",
+   "format.codec": "h264"
+  },
+  "_meta": {
+   "title": "Save smoothed clip"
+  }
+ }
+}

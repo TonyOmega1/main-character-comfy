@@ -1,0 +1,665 @@
+{
+ "1": {
+  "class_type": "LoadVideo",
+  "inputs": {
+   "file": "clip.mp4"
+  },
+  "_meta": {
+   "title": "Reference motion clip (only its pose is used)"
+  }
+ },
+ "2": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "1",
+    0
+   ]
+  }
+ },
+ "3": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "avatar.png"
+  },
+  "_meta": {
+   "title": "You, in the new scene"
+  }
+ },
+ "4": {
+  "class_type": "ImageScale",
+  "inputs": {
+   "image": [
+    "3",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "width": 480,
+   "height": 832,
+   "crop": "center"
+  }
+ },
+ "5": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "rt_detr_v4-x-hgnet_fp16.safetensors",
+   "weight_dtype": "default"
+  },
+  "_meta": {
+   "title": "Load RT-DETR v4"
+  }
+ },
+ "6": {
+  "class_type": "RTDETR_detect",
+  "inputs": {
+   "image": [
+    "2",
+    0
+   ],
+   "model": [
+    "5",
+    0
+   ],
+   "threshold": 0.5,
+   "class_name": "person",
+   "max_detections": 1
+  }
+ },
+ "7": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "sdpose_wholebody_fp16.safetensors"
+  },
+  "_meta": {
+   "title": "Load SDPose wholebody"
+  }
+ },
+ "8": {
+  "class_type": "SDPoseKeypointExtractor",
+  "inputs": {
+   "model": [
+    "7",
+    0
+   ],
+   "vae": [
+    "7",
+    2
+   ],
+   "image": [
+    "2",
+    0
+   ],
+   "batch_size": 16,
+   "bboxes": [
+    "6",
+    0
+   ]
+  }
+ },
+ "9": {
+  "class_type": "SDPoseDrawKeypoints",
+  "inputs": {
+   "keypoints": [
+    "8",
+    0
+   ],
+   "draw_body": true,
+   "draw_hands": true,
+   "draw_face": false,
+   "draw_feet": false,
+   "stick_width": 4,
+   "face_point_size": 3,
+   "score_threshold": 0.3,
+   "draw_head": true
+  },
+  "_meta": {
+   "title": "Pose video"
+  }
+ },
+ "10": {
+  "class_type": "SDPoseFaceBBoxes",
+  "inputs": {
+   "keypoints": [
+    "8",
+    0
+   ],
+   "scale": 1.5,
+   "force_square": true
+  }
+ },
+ "11": {
+  "class_type": "CropByBBoxes",
+  "inputs": {
+   "image": [
+    "2",
+    0
+   ],
+   "bboxes": [
+    "10",
+    0
+   ],
+   "output_width": 512,
+   "output_height": 512,
+   "padding": 0,
+   "keep_aspect": "stretch"
+  },
+  "_meta": {
+   "title": "Face video (512)"
+  }
+ },
+ "12": {
+  "class_type": "UnetLoaderGGUF",
+  "inputs": {
+   "unet_name": "Wan2.2-Animate-14B-Q4_K_M.gguf"
+  },
+  "_meta": {
+   "title": "Wan2.2 Animate 14B (GGUF)"
+  }
+ },
+ "13": {
+  "class_type": "LoraLoaderModelOnly",
+  "inputs": {
+   "model": [
+    "12",
+    0
+   ],
+   "lora_name": "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+   "strength_model": 1.0
+  },
+  "_meta": {
+   "title": "LightX2V step-distill LoRA"
+  }
+ },
+ "14": {
+  "class_type": "ModelSamplingSD3",
+  "inputs": {
+   "model": [
+    "13",
+    0
+   ],
+   "shift": 8.0
+  }
+ },
+ "15": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+   "type": "wan",
+   "device": "default"
+  },
+  "_meta": {
+   "title": "Load umt5 (fp8)"
+  }
+ },
+ "16": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "wan_2.1_vae.safetensors"
+  },
+  "_meta": {
+   "title": "Load Wan 2.1 VAE"
+  }
+ },
+ "17": {
+  "class_type": "CLIPVisionLoader",
+  "inputs": {
+   "clip_name": "clip_vision_h.safetensors"
+  },
+  "_meta": {
+   "title": "Load CLIP Vision H"
+  }
+ },
+ "18": {
+  "class_type": "CLIPVisionEncode",
+  "inputs": {
+   "clip_vision": [
+    "17",
+    0
+   ],
+   "image": [
+    "4",
+    0
+   ],
+   "crop": "none"
+  }
+ },
+ "19": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "luxury hotel hallway at night. The person performs the movements of the pose sequence with the same timing and energy, full body, smooth natural motion, consistent face, identity and outfit, the camera stays steady.",
+   "clip": [
+    "15",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Prompt"
+  }
+ },
+ "20": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走",
+   "clip": [
+    "15",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Negative prompt"
+  }
+ },
+ "21": {
+  "class_type": "WanAnimateToVideo",
+  "inputs": {
+   "positive": [
+    "19",
+    0
+   ],
+   "negative": [
+    "20",
+    0
+   ],
+   "vae": [
+    "16",
+    0
+   ],
+   "width": 480,
+   "height": 832,
+   "length": 77,
+   "batch_size": 1,
+   "continue_motion_max_frames": 5,
+   "video_frame_offset": 0,
+   "clip_vision_output": [
+    "18",
+    0
+   ],
+   "reference_image": [
+    "4",
+    0
+   ],
+   "pose_video": [
+    "9",
+    0
+   ],
+   "face_video": [
+    "11",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Animate window 1"
+  }
+ },
+ "22": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "14",
+    0
+   ],
+   "seed": 2026,
+   "steps": 6,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "positive": [
+    "21",
+    0
+   ],
+   "negative": [
+    "21",
+    1
+   ],
+   "latent_image": [
+    "21",
+    2
+   ],
+   "denoise": 1.0
+  }
+ },
+ "23": {
+  "class_type": "TrimVideoLatent",
+  "inputs": {
+   "samples": [
+    "22",
+    0
+   ],
+   "trim_amount": [
+    "21",
+    3
+   ]
+  }
+ },
+ "24": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "23",
+    0
+   ],
+   "vae": [
+    "16",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "25": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "24",
+    0
+   ],
+   "batch_index": [
+    "21",
+    4
+   ],
+   "length": 4096
+  }
+ },
+ "26": {
+  "class_type": "WanAnimateToVideo",
+  "inputs": {
+   "positive": [
+    "19",
+    0
+   ],
+   "negative": [
+    "20",
+    0
+   ],
+   "vae": [
+    "16",
+    0
+   ],
+   "width": 480,
+   "height": 832,
+   "length": 77,
+   "batch_size": 1,
+   "continue_motion_max_frames": 5,
+   "video_frame_offset": [
+    "21",
+    5
+   ],
+   "clip_vision_output": [
+    "18",
+    0
+   ],
+   "reference_image": [
+    "4",
+    0
+   ],
+   "pose_video": [
+    "9",
+    0
+   ],
+   "face_video": [
+    "11",
+    0
+   ],
+   "continue_motion": [
+    "25",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Animate window 2 (extend)"
+  }
+ },
+ "27": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "14",
+    0
+   ],
+   "seed": 2027,
+   "steps": 6,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "positive": [
+    "26",
+    0
+   ],
+   "negative": [
+    "26",
+    1
+   ],
+   "latent_image": [
+    "26",
+    2
+   ],
+   "denoise": 1.0
+  }
+ },
+ "28": {
+  "class_type": "TrimVideoLatent",
+  "inputs": {
+   "samples": [
+    "27",
+    0
+   ],
+   "trim_amount": [
+    "26",
+    3
+   ]
+  }
+ },
+ "29": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "28",
+    0
+   ],
+   "vae": [
+    "16",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "30": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "29",
+    0
+   ],
+   "batch_index": [
+    "26",
+    4
+   ],
+   "length": 4096
+  }
+ },
+ "31": {
+  "class_type": "ImageBatch",
+  "inputs": {
+   "image1": [
+    "25",
+    0
+   ],
+   "image2": [
+    "30",
+    0
+   ]
+  }
+ },
+ "32": {
+  "class_type": "WanAnimateToVideo",
+  "inputs": {
+   "positive": [
+    "19",
+    0
+   ],
+   "negative": [
+    "20",
+    0
+   ],
+   "vae": [
+    "16",
+    0
+   ],
+   "width": 480,
+   "height": 832,
+   "length": 77,
+   "batch_size": 1,
+   "continue_motion_max_frames": 5,
+   "video_frame_offset": [
+    "26",
+    5
+   ],
+   "clip_vision_output": [
+    "18",
+    0
+   ],
+   "reference_image": [
+    "4",
+    0
+   ],
+   "pose_video": [
+    "9",
+    0
+   ],
+   "face_video": [
+    "11",
+    0
+   ],
+   "continue_motion": [
+    "31",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Animate window 3 (extend)"
+  }
+ },
+ "33": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "14",
+    0
+   ],
+   "seed": 2028,
+   "steps": 6,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "positive": [
+    "32",
+    0
+   ],
+   "negative": [
+    "32",
+    1
+   ],
+   "latent_image": [
+    "32",
+    2
+   ],
+   "denoise": 1.0
+  }
+ },
+ "34": {
+  "class_type": "TrimVideoLatent",
+  "inputs": {
+   "samples": [
+    "33",
+    0
+   ],
+   "trim_amount": [
+    "32",
+    3
+   ]
+  }
+ },
+ "35": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "34",
+    0
+   ],
+   "vae": [
+    "16",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "36": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "35",
+    0
+   ],
+   "batch_index": [
+    "32",
+    4
+   ],
+   "length": 4096
+  }
+ },
+ "37": {
+  "class_type": "ImageBatch",
+  "inputs": {
+   "image1": [
+    "31",
+    0
+   ],
+   "image2": [
+    "36",
+    0
+   ]
+  }
+ },
+ "38": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "37",
+    0
+   ],
+   "fps": 16.0
+  }
+ },
+ "39": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "38",
+    0
+   ],
+   "filename_prefix": "mc/vibe",
+   "format": "mp4",
+   "format.codec": "h264"
+  },
+  "_meta": {
+   "title": "Save your new-scene take"
+  }
+ }
+}

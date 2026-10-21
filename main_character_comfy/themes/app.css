@@ -1,0 +1,168 @@
+/* "App feel" layer (feat/app-feel-mock). Same noir identity: palette variables, fonts, one red accent,
+   square corners, mono labels. Only structure, density and small interactions change. Loaded after the theme. */
+
+/* ---- tighter page chrome: header and hero read like an app bar, not a blog masthead ---- */
+.mc-header{padding:4px 0 12px}
+.mc-hero{padding:14px 0 4px}
+.mc-hero .mc-rule{margin:8px 0 10px}
+.mc-hero h1{margin:0 0 6px}
+.mc-h1{font-size:clamp(28px,3.6vw,48px);line-height:1}
+.mc-tagline{font-size:12px}
+
+/* ---- status strip: privacy + connection as chips, help links on the right ---- */
+.mc-statusbar{align-items:center !important;gap:8px !important;flex-wrap:wrap !important;margin:4px 0 2px}
+.mc-statusbar > *{flex:0 1 auto !important;min-width:0 !important;width:auto !important}
+.mc-statusbar .mc-help-row{margin-left:auto}
+.mc-chip{border:1px solid var(--line-strong) !important;padding:4px 10px !important;background:transparent}
+.mc-chip p{margin:0 !important;font-size:11px !important;font-family:var(--f-mono) !important;color:var(--muted) !important;line-height:1.4}
+.mc-chip:empty, .mc-chip:has(.prose:empty){display:none}
+/* the connection line speaks mc: lowercase (urls and commands in code spans keep their case) */
+#mc-conn p{text-transform:lowercase}
+#mc-conn code{text-transform:none}
+.mc-setup-acc{margin-bottom:6px}
+
+/* ---- first-run tour: a floating coach card instead of a block that pushes the app down ---- */
+#mc-tour{position:fixed !important;right:20px;bottom:20px;width:min(400px,calc(100vw - 32px)) !important;z-index:950;
+  margin:0 !important;box-shadow:6px 6px 0 var(--accent);max-height:70vh;overflow:auto;animation:mc-pop .25s ease-out}
+#mc-tour .mc-tour-title{font-size:22px}
+#mc-tour .mc-tour-body p{font-size:12px}
+@keyframes mc-pop{from{transform:translateY(12px);opacity:0}to{transform:none;opacity:1}}
+
+/* ---- mode tabs: chunky square buttons with an icon, every mode visible (no "..." menu) ---- */
+.mc-modes > .tab-wrapper{margin-bottom:12px}
+.mc-modes .tab-container.visually-hidden button{font-size:1px !important;padding:0 !important;margin:0 !important;min-width:0 !important}
+.tab-container.visually-hidden button{font-size:1px !important;padding:0 !important;margin:0 !important;min-width:0 !important}
+.mc-modes > .tab-wrapper > .tab-container[role="tablist"]{display:flex;flex-wrap:wrap;gap:8px;height:auto !important;border:0 !important}
+.mc-modes > .tab-wrapper .overflow-menu{display:none !important}
+.mc-modes > .tab-wrapper button[role="tab"]{border:1px solid var(--line-strong) !important;padding:10px 14px !important;margin:0 !important;
+  font-family:var(--f-mono) !important;font-size:13px !important;text-transform:lowercase;color:var(--muted) !important;
+  transition:transform .12s, box-shadow .12s, border-color .12s, color .12s}
+.mc-modes > .tab-wrapper button[role="tab"]:hover{transform:translate(-2px,-2px);box-shadow:2px 2px 0 var(--ink);color:var(--ink) !important}
+.mc-modes > .tab-wrapper button[role="tab"].selected, .mc-modes > .tab-wrapper button[role="tab"][aria-selected="true"]{
+  border-color:var(--accent) !important;color:var(--ink) !important;box-shadow:4px 4px 0 var(--accent) !important;transform:translate(-2px,-2px)}
+.mc-modes button[data-tab-id]::before{margin-right:8px}
+.mc-modes button[data-tab-id="meme"]::before{content:"😏"}
+.mc-modes button[data-tab-id="swap"]::before{content:"🔁"}
+.mc-modes button[data-tab-id="vibe"]::before{content:"🕺"}
+.mc-modes button[data-tab-id="pack"]::before{content:"📦"}
+.mc-modes button[data-tab-id="more"]::before{content:"🎤"}
+.mc-modes button[data-tab-id="setup"]::before{content:"⚙️"}
+/* nested tabs (More: talk, duet, sing, re-dub, batch) also all visible */
+.mc-modes .tabitem .tab-container[role="tablist"]{flex-wrap:wrap;height:auto !important}
+.mc-modes .tabitem .overflow-menu{display:none !important}
+
+/* ---- leads and info cards: one line visible, the long text one tap away ---- */
+.mc-lead{font-family:var(--f-body);font-size:15px;color:var(--ink);margin:0 0 8px}
+.mc-cards{gap:8px !important;align-items:stretch}
+.mc-cards > *{min-width:min(260px,100%) !important}
+details.mc-info{border:1px solid var(--line);background:var(--surface);padding:0;transition:border-color .15s}
+details.mc-info:hover{border-color:var(--line-strong)}
+details.mc-info > summary{cursor:pointer;list-style:none;padding:8px 12px;font-family:var(--f-mono);font-size:12px;color:var(--ink);
+  display:flex;justify-content:space-between;gap:10px}
+details.mc-info > summary::-webkit-details-marker{display:none}
+details.mc-info > summary::after{content:"+";color:var(--accent);font-weight:700}
+details.mc-info[open] > summary::after{content:"\2212"}
+details.mc-info .mc-info-body{padding:0 12px 10px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+details.mc-info .mc-info-body p{margin:0 0 8px}
+details.mc-info .mc-info-body b{color:var(--ink)}
+details.mc-info.mc-info-warn{border-left:2px solid var(--accent)}
+
+/* ---- steps: the numbered labels get a little more presence ---- */
+.mc-step-title .mc-lab{font-size:12px;padding-top:6px}
+.mc-step-title .mc-lab b{display:inline-block;min-width:26px;padding:1px 4px;background:var(--accent);color:var(--on-accent);text-align:center}
+
+/* ---- big friendly action button ---- */
+.mc-primary button, button.mc-primary{min-height:62px;transition:transform .12s, box-shadow .12s, filter .12s}
+button.mc-primary:hover, .mc-primary button:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+button.mc-primary:active, .mc-primary button:active{transform:translate(1px,1px);box-shadow:none}
+.gradio-container button.secondary{transition:border-color .12s,color .12s,transform .12s}
+.gradio-container button.secondary:active{transform:translate(1px,1px)}
+.mc-consent:has(input:checked){border-color:var(--accent) !important}
+/* always-on rights line (C.RIGHTS_SHORT) right above each consent box: one terse mono line, red rule, never folded */
+.mc-rights-wrap{padding:0 !important;border:0 !important;background:transparent !important;margin-bottom:calc(-1 * var(--layout-gap, 12px) + 4px) !important}
+.mc-rights{margin:0 !important;padding:2px 0 2px 10px;border-left:2px solid var(--accent);font-family:var(--f-mono);font-size:11px;line-height:1.5;
+  color:var(--ink);text-transform:lowercase;letter-spacing:.2px}
+
+/* ---- result panel: stays in view while you work (desktop), clear empty state ---- */
+/* result panel: one bordered "screen" so the output reads as its own area. No sticky inner scroll: in the first pass
+   it hid the share bar below the panel fold, so the preview is a bit shorter instead. */
+@media (min-width:1000px){
+  .mc-main{align-items:flex-start !important}
+  .mc-preview{border:1px solid var(--line);padding:12px !important;background:var(--bg)}
+  .mc-preview .block.mc-still, .mc-preview .block.mc-video{height:440px !important}
+  .mc-preview .mc-still .image-container, .mc-preview .mc-video .video-container{height:calc(440px - 26px) !important}
+}
+.mc-empty-wrap{margin:0}
+.mc-empty{position:relative;border:1px dashed var(--line-strong);padding:36px 18px;text-align:center;
+  background-image:radial-gradient(var(--halftone) 1.1px,transparent 1.3px);background-size:5px 5px}
+.mc-empty-mark{font-family:'Anton','Archivo',sans-serif;font-size:56px;line-height:1;color:var(--line-strong)}
+.mc-empty-mark i{font-style:normal;color:var(--accent)}
+.mc-empty-title{font-family:var(--f-display);font-weight:800;font-size:22px;color:var(--ink);margin-top:10px;text-transform:lowercase}
+.mc-empty-title .mc-red{color:var(--accent)}
+.mc-empty-steps{font-family:var(--f-mono);font-size:12px;color:var(--muted);margin-top:6px}
+.mc-empty-hint{font-family:var(--f-mono);font-size:11px;color:var(--faint);margin-top:4px}
+/* empty: show the hint, hide the blank frame. a result: hide the hint. */
+.mc-preview:not(:has(.mc-still img)):not(:has(.mc-video video)) .mc-still{display:none !important}
+.mc-preview:has(.mc-still img) .mc-empty-wrap, .mc-preview:has(.mc-video video) .mc-empty-wrap{display:none !important}
+.mc-preview .mc-still, .mc-preview .mc-video{animation:mc-pop .3s ease-out}
+
+/* ---- progress: hidden until something runs, then the live stage pulses ---- */
+.mc-stages[data-idle]{display:none}
+.mc-stage.is-start .mc-bar > div, .mc-stage.is-progress .mc-bar > div{
+  background:linear-gradient(90deg,var(--accent) 0%,var(--ink) 50%,var(--accent) 100%);background-size:200% 100%;
+  animation:mc-run 1.2s linear infinite;min-width:8%}
+.mc-stage.is-done b{color:var(--muted)}
+@keyframes mc-run{from{background-position:200% 0}to{background-position:0 0}}
+
+/* ---- footer: about accordion sits quietly above the original footer ---- */
+.mc-about{margin-top:18px}
+
+/* ---- phones ---- */
+@media (max-width:700px){
+  .mc-h1{font-size:30px}
+  .mc-statusbar .mc-help-row{margin-left:0}
+  .mc-modes > .tab-wrapper button[role="tab"]{flex:1 1 calc(50% - 8px);padding:12px 10px !important;justify-content:flex-start}
+  #mc-tour{right:8px;left:8px;bottom:8px;width:auto !important;max-height:55vh}
+  .mc-tier > .column{min-width:0 !important}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+
+/* ---- fixes found in the first screenshot pass ---- */
+.mc-modes > .tab-wrapper{height:auto !important;padding:2px 6px 6px 0}
+.mc-modes > .tab-wrapper > .tab-container[role="tablist"]{overflow:visible !important}
+.mc-caption-row{gap:10px !important}
+/* before the first render: no empty download box, no empty post text box */
+.mc-preview .mc-download:not(:has(a)){display:none !important}
+.mc-preview .mc-post-text:has(textarea:placeholder-shown){display:none !important}
+@media (max-width:700px){
+  .mc-format-grid .wrap{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:8px !important}
+  .mc-format-grid label{min-height:68px !important}
+  .mc-header-right{gap:10px}
+  .mc-header{padding-bottom:8px}
+}
+/* status chips: one border, not two; the lead line stays mono and blunt */
+.mc-statusbar .block{border:0 !important;padding:0 !important;background:transparent !important}
+.mc-statusbar .block.mc-chip{border:0 !important;padding:0 !important}
+.mc-statusbar .prose.mc-chip{border:1px solid var(--line-strong) !important;padding:4px 10px !important}
+.mc-lead{font-family:var(--f-mono);font-size:13px}
+.mc-hero{padding-bottom:0}
+/* after a render the share bar and post text sit right under the result; the finished stage list drops below them
+   (while rendering both are empty, so the live stages are still right under the preview) */
+.mc-preview > .block:has(.mc-stages), .mc-preview > .block:has(.mc-stages) ~ *{order:1}
+.mc-preview > .block.mc-share-wrap, .mc-preview > .block.mc-share-wrap + .form{order:0}
+.mc-modes .tabitem .tab-wrapper{height:auto !important}
+/* phones, second pass: the tour sheet keeps its three buttons on one row, and the header + hero take less of the
+   first screen so the mode buttons show up sooner */
+@media (max-width:700px){
+  #mc-tour .row{flex-wrap:nowrap !important;gap:6px !important}
+  #mc-tour .row > button, #mc-tour .row > *{min-width:0 !important;flex:1 1 0 !important}
+  #mc-tour{padding:12px 14px 8px !important}
+  .mc-header-right{gap:6px 12px !important}
+  .mc-hero{padding-top:6px}
+  .mc-hero .mc-rule{margin:6px 0 8px}
+  .mc-h1{font-size:26px}
+}
+/* drop zones speak mc, not stock gradio: mono, lowercase */
+.gradio-container button.center .wrap{font-family:var(--f-mono) !important;text-transform:lowercase;font-size:13px !important}

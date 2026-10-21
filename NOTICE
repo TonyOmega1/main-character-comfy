@@ -1,0 +1,7 @@
+MC: Main Character (main-character-comfy)
+Copyright 2026 Oroku Saki and main-character-comfy contributors
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+This project does not include or redistribute any model weights. Models are
+downloaded separately by the user under their own licenses; see models.md.

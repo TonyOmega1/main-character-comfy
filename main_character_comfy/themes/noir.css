@@ -1,0 +1,250 @@
+/* MC "Noir Editorial" (v3, approved). Ported from mockups/v3/mc-theme.css.
+   Palettes live on html[data-theme=dark|light] (default dark, light only when picked on the header toggle; never follows the OS).
+   One accent: red. Texture: film grain, crop marks, halftone frames. Labels: deadpan lowercase mono. */
+:root,[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0a0a0a; --surface:#121212; --tile:#181818; --tile-fig:#2a2a2a;
+  --ink:#efece6; --muted:#8c8981; --faint:#55534e; --line:#252525; --line-strong:#3a3a3a;
+  --accent:#ff2a2a; --on-accent:#0a0a0a;
+  --grain-opacity:.07; --grain-blend:screen;
+  --duo-a:#0a0a0a; --duo-b:#3a1514; --halftone:rgba(255,255,255,.06);
+  --cap-ink:#ffffff;
+  /* tip-only text (WCAG AA 4.5:1 on --bg); leave global --muted/--faint/--accent alone */
+  --tip-muted:#8c8981; --tip-quote:#807d74; --tip-accent:#ff2a2a; --tip-on-accent:#0a0a0a;
+  /* top bar: mc red strip, same red as the accent (5.6:1 for its ink) */
+  --bar:#ff2a2a; --bar-ink:#0a0a0a;
+}
+[data-theme="light"]{
+  color-scheme:light;
+  --bg:#efebe3; --surface:#e7e2d8; --tile:#ddd7cb; --tile-fig:#b9b2a4;
+  --ink:#0e0e0e; --muted:#5e5a53; --faint:#8f897e; --line:#cfc8bb; --line-strong:#a8a093;
+  --accent:#e01e1e; --on-accent:#efebe3;
+  --grain-opacity:.11; --grain-blend:multiply;
+  --duo-a:#efebe3; --duo-b:#e6b8ad; --halftone:rgba(0,0,0,.07);
+  --cap-ink:#0e0e0e;
+  /* tip-only: deeper red + darker warm-grey quote so tip text hits 4.5:1 on --bg */
+  --tip-muted:#5e5a53; --tip-quote:#6f665a; --tip-accent:#c41a1a; --tip-on-accent:#ffffff;
+  --bar:#ff2a2a; --bar-ink:#0a0a0a;
+}
+:root{--f-display:'Archivo','Arial Black',sans-serif; --f-body:'Inter',ui-sans-serif,system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,monospace;}
+
+/* ---- map the palette onto Gradio's own variables (wins over body.dark / :root by proximity) ---- */
+html[data-theme] .gradio-container, html[data-theme] gradio-app{
+  --body-background-fill:var(--bg); --background-fill-primary:var(--bg); --background-fill-secondary:var(--surface);
+  --block-background-fill:transparent; --block-border-color:var(--line); --block-border-width:1px; --block-shadow:none;
+  --block-label-background-fill:transparent; --block-label-border-color:transparent; --block-label-text-color:var(--muted);
+  --block-label-shadow:none; --block-title-text-color:var(--muted); --block-info-text-color:var(--faint);
+  --body-text-color:var(--ink); --body-text-color-subdued:var(--muted); --color-accent:var(--accent);
+  --color-accent-soft:transparent; --border-color-primary:var(--line); --border-color-accent:var(--accent);
+  --border-color-accent-subdued:var(--line-strong);
+  --input-background-fill:transparent; --input-background-fill-focus:transparent; --input-border-color:var(--line-strong);
+  --input-border-color-focus:var(--accent); --input-placeholder-color:var(--faint); --input-shadow:none; --input-shadow-focus:none;
+  --button-primary-background-fill:var(--accent); --button-primary-background-fill-hover:var(--accent);
+  --button-primary-text-color:var(--on-accent); --button-primary-border-color:var(--accent); --button-primary-shadow:none;
+  --button-secondary-background-fill:transparent; --button-secondary-background-fill-hover:transparent;
+  --button-secondary-text-color:var(--ink); --button-secondary-border-color:var(--line-strong);
+  --button-secondary-border-color-hover:var(--ink); --button-secondary-shadow:none;
+  --checkbox-background-color:transparent; --checkbox-border-color:var(--line-strong);
+  --checkbox-background-color-selected:var(--accent); --checkbox-border-color-selected:var(--accent);
+  --checkbox-label-background-fill:var(--tile); --checkbox-label-background-fill-hover:var(--tile);
+  --checkbox-label-background-fill-selected:var(--tile); --checkbox-label-border-color:var(--line);
+  --checkbox-label-border-color-hover:var(--line-strong); --checkbox-label-border-color-selected:var(--accent);
+  --checkbox-label-text-color:var(--muted); --checkbox-label-text-color-selected:var(--ink); --checkbox-label-shadow:none;
+  --panel-background-fill:var(--surface); --panel-border-color:var(--line); --accordion-text-color:var(--muted);
+  --link-text-color:var(--ink); --link-text-color-hover:var(--accent); --link-text-color-visited:var(--ink);
+  --table-even-background-fill:var(--surface); --table-odd-background-fill:var(--bg); --code-background-fill:var(--surface);
+  --error-text-color:var(--accent); --error-border-color:var(--accent); --error-background-fill:transparent;
+  --shadow-drop:none; --shadow-drop-lg:none; --shadow-spread:0px;
+  background:var(--bg); color:var(--ink); font-family:var(--f-body);
+}
+html[data-theme], html[data-theme] body{background:var(--bg) !important; color:var(--ink);}
+
+/* the red top bar: a thin raw mc red strip above everything, in normal flow (pushes the page down 24px, covers nothing).
+   [data-theme] prefix so the try-it page picks it up too (trypage.app_css keeps [data-theme rules). */
+[data-theme] body::before{content:"mc \00b7  open source";display:block;height:24px;line-height:24px;padding:0 14px;box-sizing:border-box;
+  background:var(--bar);color:var(--bar-ink);font-family:var(--f-mono);font-size:10px;font-weight:600;letter-spacing:.6px;
+  text-transform:lowercase;white-space:nowrap;overflow:hidden;pointer-events:none}
+
+/* film grain over everything (never blocks clicks); absolute on body so full-page captures are covered too */
+html[data-theme] body{position:relative;min-height:100vh}
+body::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:9999;opacity:var(--grain-opacity);mix-blend-mode:var(--grain-blend);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.6 -.3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---- header: logo · status · dark/light ---- */
+.mc-header{border-bottom:1px solid var(--line);padding:6px 0 18px}
+.mc-header-right{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.mc-header-right b{color:var(--ink);font-weight:600}
+.mc-dot{display:inline-block;width:6px;height:6px;background:var(--accent);border-radius:50%;margin-right:6px;vertical-align:1px}
+.mc-toggle{display:inline-flex;border:1px solid var(--line-strong);font-family:var(--f-mono);font-size:11px}
+.mc-toggle button{padding:6px 10px;color:var(--muted);background:transparent;border:0;cursor:pointer;font:inherit}
+.mc-toggle button.on{background:var(--ink);color:var(--bg)}
+.mc-toggle button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* tips: header pill = plain link (outlined, accent on hover). Footer: mobile-first tap pill + quote;
+   wide screens with a fine pointer also get the always-visible QR (fixed size: no layout shift, no popover). */
+.mc-tip{display:inline-flex;align-items:center;gap:6px}
+.mc-tip-pill,.mc-tip-link{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border:1px solid var(--accent);
+  border-radius:999px;color:var(--ink) !important;text-decoration:none !important;font-family:var(--f-mono);font-size:11px;
+  line-height:1;white-space:nowrap}
+.mc-tip-mark{color:var(--tip-accent);font-weight:700}
+.mc-tip-pill:hover,.mc-tip-pill:focus-visible,.mc-tip-link:hover,.mc-tip-link:focus-visible{background:var(--accent);
+  color:var(--tip-on-accent) !important}
+.mc-tip-pill:hover .mc-tip-mark,.mc-tip-pill:focus-visible .mc-tip-mark,.mc-tip-link:hover .mc-tip-mark,
+.mc-tip-link:focus-visible .mc-tip-mark{color:var(--tip-on-accent)}
+.mc-tip-pill:focus-visible,.mc-tip-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mc-tip-card{font-family:var(--f-mono);font-size:11px;color:var(--tip-muted)}
+.mc-tip-card[hidden]{display:none !important}
+a.mc-tip-card{color:var(--tip-muted) !important;text-decoration:underline !important;text-underline-offset:2px;white-space:nowrap}
+a.mc-tip-card:hover,a.mc-tip-card:focus-visible{color:var(--accent) !important}
+a.mc-tip-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mc-tip-foot-text .mc-tip-card{font-size:11px}
+.mc-tip-foot{display:flex;align-items:center;gap:16px;margin-top:12px}
+.mc-tip-foot-text{display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-width:0}
+.mc-tip-qrbox{display:flex;margin:0;flex:0 0 auto;flex-direction:column;align-items:center;gap:6px}
+.mc-tip-qrcard{display:block;width:112px;height:112px;padding:6px;background:#ffffff;border:1px solid var(--line-strong);box-sizing:content-box}
+.mc-tip-qrcard img,.mc-tip-qrcard svg{display:block;width:112px;height:112px}
+.mc-tip-qrbox figcaption{font-family:var(--f-mono);font-size:10px;color:var(--tip-muted)}
+.mc-tip-quote{font-style:italic;font-weight:400;font-size:10px;line-height:1.4;color:var(--tip-quote);font-family:var(--f-body);max-width:44ch}
+/* desktop default: QR visible, the link is a quiet text fallback */
+.mc-tip-link{padding:0;border:0;border-radius:0;color:var(--tip-muted) !important;text-decoration:underline !important}
+.mc-tip-link:hover,.mc-tip-link:focus-visible{background:transparent;color:var(--accent) !important}
+.mc-tip-link .mc-tip-mark{display:none}
+/* phones / touch: no QR, the link becomes a tap pill (quote stays right under it) */
+@media (max-width:700px), (hover:none) and (pointer:coarse){
+  .mc-tip-qrbox{display:none}
+  .mc-tip-link{padding:5px 11px;border:1px solid var(--accent);border-radius:999px;color:var(--ink) !important;text-decoration:none !important}
+  .mc-tip-link .mc-tip-mark{display:inline}
+  .mc-tip-link:hover,.mc-tip-link:focus-visible{background:var(--accent);color:var(--tip-on-accent) !important}
+}
+
+/* ---- hero ---- */
+.mc-kicker{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.mc-rule{height:2px;background:var(--accent);width:56px}
+.mc-h1{font-family:var(--f-display);font-weight:800;font-size:clamp(40px,5.4vw,78px);line-height:.94;letter-spacing:-.04em;color:var(--ink)}
+.mc-h1 em{font-style:normal;color:var(--accent)}
+.mc-tagline{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+
+/* ---- deadpan labels: "01 face", block labels, accordions ---- */
+.mc-lab{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-transform:lowercase}
+.mc-lab b{color:var(--accent);font-weight:600;margin-right:8px}
+.gradio-container [data-testid="block-label"], .gradio-container [data-testid="block-info"],
+.gradio-container .block-title, .gradio-container .label-wrap span, .gradio-container label > span:not(.mc-keep){
+  font-family:var(--f-mono) !important;font-size:11px !important;font-weight:400 !important;color:var(--muted) !important;
+  text-transform:lowercase;letter-spacing:.2px}
+.gradio-container .prose, .gradio-container .md{color:var(--ink)}
+.mc-note, .mc-note p{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.mc-warn{border-left:2px solid var(--accent);padding-left:10px}
+.mc-privacy, .mc-conn, .mc-conn p{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+
+/* ---- tabs read like the mockup's nav ---- */
+.mc-modes > .tab-wrapper button[role="tab"], .mc-modes button[role="tab"]{font-family:var(--f-body);font-size:14px;color:var(--muted);
+  background:transparent;border:0;border-radius:0;padding:8px 2px;margin-right:28px}
+.mc-modes button[role="tab"].selected, .mc-modes button[role="tab"][aria-selected="true"]{color:var(--ink);
+  box-shadow:inset 0 -2px 0 var(--accent)}
+.mc-modes button[role="tab"]:hover{color:var(--ink)}
+.gradio-container .tab-wrapper, .gradio-container .tab-container{border-bottom:1px solid var(--line) !important}
+
+/* ---- buttons: one red primary, ghost secondaries ---- */
+.gradio-container button.primary, .mc-primary button, button.mc-primary{background:var(--accent);color:var(--on-accent);border:0;border-radius:0;
+  font-family:var(--f-display);font-weight:800;font-size:16px;letter-spacing:1.5px;text-transform:uppercase}
+.gradio-container button.primary:hover{filter:brightness(1.08)}
+.gradio-container button.secondary, .mc-ghost button{background:transparent;color:var(--ink);border:1px solid var(--ink);border-radius:0;
+  font-family:var(--f-mono);font-size:13px;font-weight:400;text-transform:lowercase}
+.gradio-container button.secondary:hover{border-color:var(--accent);color:var(--accent)}
+.mc-animate{background:transparent !important;color:var(--ink) !important;border:1px solid var(--ink) !important;
+  font-family:var(--f-mono) !important;font-size:13px !important;letter-spacing:0 !important;text-transform:lowercase !important}
+.mc-animate:hover{border-color:var(--accent) !important;color:var(--accent) !important}
+
+/* ---- inputs ---- */
+.gradio-container textarea, .gradio-container input[type="text"], .gradio-container input[type="number"]{
+  background:transparent !important;color:var(--ink) !important;border-radius:0 !important;caret-color:var(--accent);font-family:var(--f-body)}
+.gradio-container input[type="checkbox"]{accent-color:var(--accent)}
+.gradio-container input[type="range"]{accent-color:var(--accent)}
+
+/* ---- format grid: tiles with hover lift and the red "picked" state ---- */
+.mc-format-grid .wrap{gap:12px !important}
+.mc-format-grid label{position:relative;min-height:84px !important;align-items:flex-end !important;justify-content:flex-start !important;
+  background:var(--tile) !important;border:1px solid var(--line) !important;border-radius:0 !important;padding:8px !important;
+  font-family:var(--f-mono) !important;font-size:11px !important;font-weight:400 !important;color:var(--muted) !important;
+  text-transform:lowercase;text-align:left !important;transition:transform .15s, box-shadow .15s, border-color .15s;
+  background-image:radial-gradient(var(--halftone) 1.1px,transparent 1.3px) !important;background-size:5px 5px !important}
+.mc-format-grid label > span{color:inherit !important;font-size:11px !important}
+.mc-format-grid label input{position:absolute;opacity:0;pointer-events:none}
+.mc-format-grid label:hover{border-color:var(--line-strong) !important;transform:translate(-2px,-2px);box-shadow:2px 2px 0 var(--ink);color:var(--ink) !important}
+.mc-format-grid label.selected, .mc-format-grid label:has(input:checked){border-color:var(--accent) !important;
+  box-shadow:4px 4px 0 var(--accent);transform:translate(-2px,-2px);color:var(--ink) !important}
+.mc-format-grid label.selected::after, .mc-format-grid label:has(input:checked)::after{content:"\2713  picked";position:absolute;top:0;right:0;
+  background:var(--accent);color:var(--on-accent);font-family:var(--f-mono);font-size:10px;font-weight:700;padding:3px 6px}
+.mc-format-card, .mc-format-card p{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.mc-format-card strong{color:var(--ink)}
+
+/* ---- image frames: duotone + halftone + crop marks ---- */
+.mc-frame{position:relative;overflow:visible !important;border:0 !important;
+  background:linear-gradient(160deg,var(--duo-a) 0%,var(--duo-b) 140%) !important}
+.mc-frame::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
+  background-image:radial-gradient(var(--halftone) 1.1px,transparent 1.3px);background-size:5px 5px}
+.mc-frame::before{content:"";position:absolute;inset:-8px;pointer-events:none;z-index:2;opacity:.55;
+  --c:var(--ink);
+  background:
+    linear-gradient(var(--c),var(--c)) top left/14px 1px no-repeat, linear-gradient(var(--c),var(--c)) top left/1px 14px no-repeat,
+    linear-gradient(var(--c),var(--c)) top right/14px 1px no-repeat, linear-gradient(var(--c),var(--c)) top right/1px 14px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom left/14px 1px no-repeat, linear-gradient(var(--c),var(--c)) bottom left/1px 14px no-repeat,
+    linear-gradient(var(--c),var(--c)) bottom right/14px 1px no-repeat, linear-gradient(var(--c),var(--c)) bottom right/1px 14px no-repeat}
+.mc-frame img, .mc-frame video{position:relative;z-index:0}
+.mc-frame button, .mc-frame [data-testid]{position:relative;z-index:3}
+
+/* ---- progress, status, share ---- */
+.mc-stage{background:transparent;border-top:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.mc-stage b{color:var(--ink);font-weight:500}
+.mc-bar{background:var(--line);height:2px !important}
+.mc-bar > div{background:var(--accent)}
+.mc-msg{font-size:11px;color:var(--faint)}
+.mc-status, .mc-status p{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.mc-joke{color:var(--faint)}
+.mc-toast, .mc-toast p{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
+.mc-share-btn{border:1px solid var(--line-strong);background:transparent;color:var(--ink);font-family:var(--f-mono);font-size:12px;text-transform:lowercase}
+.mc-share-btn:hover{border-color:var(--ink)}
+.mc-share-btn.mc-copy{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.mc-tier-info, .mc-tier-info p{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.mc-tier-info strong{color:var(--ink);font-weight:600}
+.mc-footer, .mc-footer p{font-family:var(--f-mono);font-size:11px;color:var(--faint)}
+.mc-footline{font-family:var(--f-mono);font-size:11px;color:var(--faint);border-top:1px solid var(--line);padding-top:14px}
+.gradio-container .accordion, .gradio-container .label-wrap{border-radius:0}
+/* no grey slabs: Gradio's form groups paint their gap with the border color */
+.gradio-container .form{background:transparent !important;border:0 !important;gap:10px !important}
+.gradio-container .form > .block{border:1px solid var(--line) !important}
+.gradio-container .block.mc-format-grid, .gradio-container .mc-format-grid.block{background:transparent !important;border:0 !important;padding:0 !important}
+/* hardware tier switch: small mono chips */
+.mc-tier-toggle label{background:transparent !important;border:1px solid var(--line-strong) !important;border-radius:0 !important;
+  font-family:var(--f-mono) !important;font-size:11px !important;color:var(--muted) !important;white-space:nowrap;padding:6px 10px !important}
+.mc-tier-toggle label.selected, .mc-tier-toggle label:has(input:checked){border-color:var(--accent) !important;color:var(--ink) !important}
+
+/* logo block: figure + MC. / "main character" / fake © gag + patent pending (jokes; real license Apache-2.0) */
+.mc-logo{display:flex;flex-direction:column;gap:4px}
+.mc-legal,.mc-patent{font-family:var(--f-mono);font-size:9px;color:var(--faint);letter-spacing:.2px;max-width:340px;line-height:1.3}
+.mc-patent{margin-top:-1px}
+.mc-fineprint{font-family:var(--f-mono);font-size:10px;color:var(--faint);margin-top:6px}
+.mc-disclaim{font-family:var(--f-mono);font-size:10px;line-height:1.5;color:var(--muted);margin:6px 0 0;text-transform:lowercase}
+/* creator credit lives under the logo (header); send feedback stays in the footer */
+.mc-logo .mc-credit{font-family:var(--f-mono);font-size:10px;color:var(--muted);letter-spacing:.2px;line-height:1.3;margin:1px 0 2px}
+.mc-credit a, a.mc-feedback{color:var(--ink);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--accent)}
+.mc-credit a:hover, .mc-credit a:focus-visible, a.mc-feedback:hover, a.mc-feedback:focus-visible{color:var(--accent)}
+a.mc-feedback{font-family:var(--f-mono);font-size:10px;color:var(--muted)}
+.mc-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* first-run quick tour (skippable; the help link re-opens it) + clip link box + reference check */
+.mc-tour-done #mc-tour{display:none !important}
+#mc-tour{border:2px solid var(--ink);background:var(--surface);padding:18px 20px 12px;margin:8px 0 14px}
+#mc-tour .mc-tour-kicker{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:lowercase}
+#mc-tour .mc-tour-title{font-family:var(--f-display);margin:4px 0 8px;font-size:26px;color:var(--ink);text-transform:lowercase}
+#mc-tour .mc-red{color:var(--accent)}
+#mc-tour .mc-tour-body p{font-family:var(--f-mono);font-size:13px;color:var(--ink);margin:0 0 8px;max-width:76ch}
+#mc-tour .mc-tour-body a{color:var(--accent)}
+#mc-tour .mc-tour-dots{display:flex;gap:6px;margin-top:6px}
+#mc-tour .mc-tour-dot{width:18px;height:3px;background:var(--line-strong)}
+#mc-tour .mc-tour-dot.on{background:var(--accent)}
+#mc-tour button{text-transform:lowercase}
+button.mc-help{font-family:var(--f-mono);font-size:12px;color:var(--muted) !important;text-transform:lowercase;
+  text-decoration:underline;background:none !important;border:none !important;box-shadow:none !important;
+  padding:0 !important;min-width:0 !important;width:auto !important;align-self:flex-start}
+.mc-ref-check strong, .mc-ref-check b{color:var(--accent)}

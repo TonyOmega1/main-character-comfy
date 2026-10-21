@@ -1,0 +1,31 @@
+{
+ "$comment": "Two ComfyUI v0.41.0 CORE nodes MC Lite uses that weren't in the trimmed object_info snapshot from the reference PC. Transcribed from the v0.41.0 source (comfy_extras/nodes_wan.py Wan22ImageToVideoLatent, nodes.py VAEDecodeTiled). Replace with a fresh /object_info dump once the PC is on (PC_TODO step 2).",
+ "Wan22ImageToVideoLatent": {
+  "input": {
+   "required": {
+    "vae": ["VAE", {}],
+    "width": ["INT", {"default": 1280, "min": 32, "max": 16384, "step": 32}],
+    "height": ["INT", {"default": 704, "min": 32, "max": 16384, "step": 32}],
+    "length": ["INT", {"default": 49, "min": 1, "max": 16384, "step": 4}],
+    "batch_size": ["INT", {"default": 1, "min": 1, "max": 4096}]
+   },
+   "optional": {"start_image": ["IMAGE", {}]}
+  },
+  "output": ["LATENT"],
+  "name": "Wan22ImageToVideoLatent"
+ },
+ "VAEDecodeTiled": {
+  "input": {
+   "required": {
+    "samples": ["LATENT", {}],
+    "vae": ["VAE", {}],
+    "tile_size": ["INT", {"default": 512, "min": 64, "max": 4096, "step": 32, "advanced": true}],
+    "overlap": ["INT", {"default": 64, "min": 0, "max": 4096, "step": 32, "advanced": true}],
+    "temporal_size": ["INT", {"default": 64, "min": 8, "max": 4096, "step": 4, "advanced": true}],
+    "temporal_overlap": ["INT", {"default": 8, "min": 4, "max": 4096, "step": 4, "advanced": true}]
+   }
+  },
+  "output": ["IMAGE"],
+  "name": "VAEDecodeTiled"
+ }
+}

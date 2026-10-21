@@ -1,0 +1,5321 @@
+{
+ "UNETLoader": {
+  "input": {
+   "required": {
+    "unet_name": [
+     [
+      "flux-2-klein-4b.safetensors",
+      "wan2.2_ti2v_5B_fp16.safetensors"
+     ]
+    ],
+    "weight_dtype": [
+     [
+      "default",
+      "fp8_e4m3fn",
+      "fp8_e4m3fn_fast",
+      "fp8_e5m2"
+     ],
+     {
+      "advanced": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "unet_name",
+    "weight_dtype"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MODEL"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MODEL"
+  ],
+  "name": "UNETLoader",
+  "display_name": "Load Diffusion Model",
+  "description": "",
+  "python_module": "nodes",
+  "category": "model/loaders",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "CLIPLoader": {
+  "input": {
+   "required": {
+    "clip_name": [
+     [
+      "qwen_3_4b.safetensors",
+      "umt5_xxl_fp8_e4m3fn_scaled.safetensors"
+     ]
+    ],
+    "type": [
+     [
+      "stable_diffusion",
+      "stable_cascade",
+      "sd3",
+      "stable_audio",
+      "mochi",
+      "ltxv",
+      "pixart",
+      "cosmos",
+      "lumina2",
+      "wan",
+      "hidream",
+      "chroma",
+      "ace",
+      "omnigen2",
+      "qwen_image",
+      "hunyuan_image",
+      "flux2",
+      "ovis",
+      "longcat_image",
+      "cogvideox",
+      "lens",
+      "pixeldit",
+      "ideogram4",
+      "boogu",
+      "krea2",
+      "joyimage",
+      "mage",
+      "minimax",
+      "yue2",
+      "flux3"
+     ]
+    ]
+   },
+   "optional": {
+    "device": [
+     [
+      "default",
+      "cpu"
+     ],
+     {
+      "advanced": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "clip_name",
+    "type"
+   ],
+   "optional": [
+    "device"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "CLIP"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "CLIP"
+  ],
+  "name": "CLIPLoader",
+  "display_name": "Load CLIP",
+  "description": "Recipes:\nsd: clip-l\nstable cascade: clip-g\nsd3: t5 xxl / clip-g / clip-l\nstable audio: t5 base\nmochi: t5 xxl\ncogvideox: t5 xxl (226-token padding)\ncosmos: old t5 xxl\nlumina2: gemma 2 2B\nwan: umt5 xxl\nhidream: llama-3.1 (Recommend) or t5\nomnigen2: qwen vl 2.5 3B\njoyimage: qwen3-vl 8B\nlens: gpt-oss-20b\npixeldit: gemma 2 2B elm\nminimax: MiniMax H3 Qwen3-VL or Music3 Qwen/RVQ\nflux3: qwen3-vl 4B",
+  "python_module": "nodes",
+  "category": "model/loaders",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "VAELoader": {
+  "input": {
+   "required": {
+    "vae_name": [
+     [
+      "flux2-vae.safetensors",
+      "wan2.2_vae.safetensors",
+      "wan_2.1_vae.safetensors",
+      "taesd",
+      "taef1",
+      "taesdxl",
+      "pixel_space"
+     ]
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "vae_name"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "VAE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "VAE"
+  ],
+  "name": "VAELoader",
+  "display_name": "Load VAE",
+  "description": "",
+  "python_module": "nodes",
+  "category": "model/loaders",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "CLIPTextEncode": {
+  "input": {
+   "required": {
+    "text": [
+     "STRING",
+     {
+      "multiline": true,
+      "dynamicPrompts": true,
+      "tooltip": "The text to be encoded."
+     }
+    ],
+    "clip": [
+     "CLIP",
+     {
+      "tooltip": "The CLIP model used for encoding the text."
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "text",
+    "clip"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "CONDITIONING"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "CONDITIONING"
+  ],
+  "name": "CLIPTextEncode",
+  "display_name": "CLIP Text Encode (Prompt)",
+  "description": "Encodes a text prompt using a CLIP model into an embedding that can be used to guide the diffusion model towards generating specific images.",
+  "python_module": "nodes",
+  "category": "model/conditioning",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "output_tooltips": [
+   "A conditioning containing the embedded text used to guide the diffusion model."
+  ],
+  "search_aliases": [
+   "text",
+   "prompt",
+   "text prompt",
+   "positive prompt",
+   "negative prompt",
+   "encode text",
+   "text encoder",
+   "encode prompt"
+  ]
+ },
+ "ConditioningZeroOut": {
+  "input": {
+   "required": {
+    "conditioning": [
+     "CONDITIONING"
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "conditioning"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "CONDITIONING"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "CONDITIONING"
+  ],
+  "name": "ConditioningZeroOut",
+  "display_name": "Conditioning Zero Out",
+  "description": "",
+  "python_module": "nodes",
+  "category": "model/conditioning/transform",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": [
+   "null conditioning",
+   "clear conditioning"
+  ]
+ },
+ "LoadImage": {
+  "input": {
+   "required": {
+    "image": [
+     [
+      "example.png",
+      "ref1.png",
+      "ref2.png",
+      "ref3.png",
+      "ref4.png",
+      "start.png"
+     ],
+     {
+      "image_upload": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "image"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE",
+   "MASK"
+  ],
+  "output_is_list": [
+   false,
+   false
+  ],
+  "output_name": [
+   "IMAGE",
+   "MASK"
+  ],
+  "name": "LoadImage",
+  "display_name": "Load Image",
+  "description": "",
+  "python_module": "nodes",
+  "category": "image",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": [
+   "load image",
+   "open image",
+   "import image",
+   "image input",
+   "upload image",
+   "read image",
+   "image loader"
+  ],
+  "essentials_category": "Basics"
+ },
+ "ImageScaleToTotalPixels": {
+  "input": {
+   "required": {
+    "image": [
+     "IMAGE",
+     {}
+    ],
+    "upscale_method": [
+     "COMBO",
+     {
+      "multiselect": false,
+      "options": [
+       "nearest-exact",
+       "bilinear",
+       "area",
+       "bicubic",
+       "lanczos"
+      ]
+     }
+    ],
+    "megapixels": [
+     "FLOAT",
+     {
+      "default": 1.0,
+      "min": 0.01,
+      "max": 16.0,
+      "step": 0.01
+     }
+    ],
+    "resolution_steps": [
+     "INT",
+     {
+      "advanced": true,
+      "default": 1,
+      "min": 1,
+      "max": 256
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "image",
+    "upscale_method",
+    "megapixels",
+    "resolution_steps"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "ImageScaleToTotalPixels",
+  "display_name": "Scale Image to Total Pixels",
+  "description": "",
+  "python_module": "comfy_extras.nodes_post_processing",
+  "category": "image/upscaling",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "VAEEncode": {
+  "input": {
+   "required": {
+    "pixels": [
+     "IMAGE"
+    ],
+    "vae": [
+     "VAE"
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "pixels",
+    "vae"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "LATENT"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "LATENT"
+  ],
+  "name": "VAEEncode",
+  "display_name": "VAE Encode",
+  "description": "",
+  "python_module": "nodes",
+  "category": "model/latent",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": [
+   "encode",
+   "encode image",
+   "image to latent"
+  ]
+ },
+ "ReferenceLatent": {
+  "input": {
+   "required": {
+    "conditioning": [
+     "CONDITIONING",
+     {}
+    ]
+   },
+   "optional": {
+    "latent": [
+     "LATENT",
+     {}
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "conditioning"
+   ],
+   "optional": [
+    "latent"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "CONDITIONING"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "CONDITIONING"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "ReferenceLatent",
+  "display_name": "Set Reference Latent",
+  "description": "This node sets the guiding latent for an edit model. If the model supports it you can chain multiple to set multiple reference images.",
+  "python_module": "comfy_extras.nodes_edit_model",
+  "category": "model/conditioning",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "CFGGuider": {
+  "input": {
+   "required": {
+    "model": [
+     "MODEL",
+     {}
+    ],
+    "positive": [
+     "CONDITIONING",
+     {}
+    ],
+    "negative": [
+     "CONDITIONING",
+     {}
+    ],
+    "cfg": [
+     "FLOAT",
+     {
+      "default": 8.0,
+      "min": 0.0,
+      "max": 100.0,
+      "step": 0.1,
+      "round": 0.01
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model",
+    "positive",
+    "negative",
+    "cfg"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "GUIDER"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "GUIDER"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "CFGGuider",
+  "display_name": "CFG Guider",
+  "description": "",
+  "python_module": "comfy_extras.nodes_custom_sampler",
+  "category": "model/sampling/guiders",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "RandomNoise": {
+  "input": {
+   "required": {
+    "noise_seed": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 18446744073709551615,
+      "control_after_generate": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "noise_seed"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "NOISE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "NOISE"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "RandomNoise",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_custom_sampler",
+  "category": "model/sampling/noise",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "KSamplerSelect": {
+  "input": {
+   "required": {
+    "sampler_name": [
+     "COMBO",
+     {
+      "multiselect": false,
+      "options": [
+       "euler",
+       "euler_cfg_pp",
+       "euler_ancestral",
+       "euler_ancestral_cfg_pp",
+       "heun",
+       "heunpp2",
+       "exp_heun_2_x0",
+       "exp_heun_2_x0_sde",
+       "dpm_2",
+       "dpm_2_ancestral",
+       "lms",
+       "dpm_fast",
+       "dpm_adaptive",
+       "dpmpp_2s_ancestral",
+       "dpmpp_2s_ancestral_cfg_pp",
+       "dpmpp_sde",
+       "dpmpp_sde_gpu",
+       "dpmpp_2m",
+       "dpmpp_2m_cfg_pp",
+       "dpmpp_2m_sde",
+       "dpmpp_2m_sde_gpu",
+       "dpmpp_2m_sde_heun",
+       "dpmpp_2m_sde_heun_gpu",
+       "dpmpp_3m_sde",
+       "dpmpp_3m_sde_gpu",
+       "ddpm",
+       "lcm",
+       "ipndm",
+       "ipndm_v",
+       "deis",
+       "cfgpp_ud10_ab",
+       "res_multistep",
+       "res_multistep_cfg_pp",
+       "res_multistep_ancestral",
+       "res_multistep_ancestral_cfg_pp",
+       "gradient_estimation",
+       "gradient_estimation_cfg_pp",
+       "er_sde",
+       "seeds_2",
+       "seeds_3",
+       "sa_solver",
+       "sa_solver_pece",
+       "ddim",
+       "uni_pc",
+       "uni_pc_bh2"
+      ]
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "sampler_name"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "SAMPLER"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "SAMPLER"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "KSamplerSelect",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_custom_sampler",
+  "category": "model/sampling/samplers",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "Flux2Scheduler": {
+  "input": {
+   "required": {
+    "steps": [
+     "INT",
+     {
+      "default": 20,
+      "min": 1,
+      "max": 4096
+     }
+    ],
+    "width": [
+     "INT",
+     {
+      "default": 1024,
+      "min": 16,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "height": [
+     "INT",
+     {
+      "default": 1024,
+      "min": 16,
+      "max": 16384,
+      "step": 1
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "steps",
+    "width",
+    "height"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "SIGMAS"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "SIGMAS"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "Flux2Scheduler",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_flux",
+  "category": "model/sampling/schedulers",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "EmptyFlux2LatentImage": {
+  "input": {
+   "required": {
+    "width": [
+     "INT",
+     {
+      "default": 1024,
+      "min": 16,
+      "max": 16384,
+      "step": 16
+     }
+    ],
+    "height": [
+     "INT",
+     {
+      "default": 1024,
+      "min": 16,
+      "max": 16384,
+      "step": 16
+     }
+    ],
+    "batch_size": [
+     "INT",
+     {
+      "default": 1,
+      "min": 1,
+      "max": 4096
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "width",
+    "height",
+    "batch_size"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "LATENT"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "LATENT"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "EmptyFlux2LatentImage",
+  "display_name": "Empty Flux 2 Latent",
+  "description": "",
+  "python_module": "comfy_extras.nodes_flux",
+  "category": "model/latent/flux",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "SamplerCustomAdvanced": {
+  "input": {
+   "required": {
+    "noise": [
+     "NOISE",
+     {}
+    ],
+    "guider": [
+     "GUIDER",
+     {}
+    ],
+    "sampler": [
+     "SAMPLER",
+     {}
+    ],
+    "sigmas": [
+     "SIGMAS",
+     {}
+    ],
+    "latent_image": [
+     "LATENT",
+     {}
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "noise",
+    "guider",
+    "sampler",
+    "sigmas",
+    "latent_image"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "LATENT",
+   "LATENT"
+  ],
+  "output_is_list": [
+   false,
+   false
+  ],
+  "output_name": [
+   "output",
+   "denoised_output"
+  ],
+  "output_tooltips": [
+   null,
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "SamplerCustomAdvanced",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_custom_sampler",
+  "category": "model/sampling/custom",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "VAEDecode": {
+  "input": {
+   "required": {
+    "samples": [
+     "LATENT",
+     {
+      "tooltip": "The latent to be decoded."
+     }
+    ],
+    "vae": [
+     "VAE",
+     {
+      "tooltip": "The VAE model used for decoding the latent."
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "samples",
+    "vae"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "name": "VAEDecode",
+  "display_name": "VAE Decode",
+  "description": "Decodes latent images back into pixel space images.",
+  "python_module": "nodes",
+  "category": "model/latent",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "output_tooltips": [
+   "The decoded image."
+  ],
+  "search_aliases": [
+   "decode",
+   "decode latent",
+   "latent to image",
+   "render latent"
+  ]
+ },
+ "SaveImage": {
+  "input": {
+   "required": {
+    "images": [
+     "IMAGE",
+     {
+      "tooltip": "The images to save."
+     }
+    ],
+    "filename_prefix": [
+     "STRING",
+     {
+      "default": "ComfyUI",
+      "tooltip": "The prefix for the file to save. This may include formatting information such as %date:yyyy-MM-dd% or %Empty Latent Image.width% to include values from nodes."
+     }
+    ]
+   },
+   "hidden": {
+    "prompt": "PROMPT",
+    "extra_pnginfo": "EXTRA_PNGINFO"
+   }
+  },
+  "input_order": {
+   "required": [
+    "images",
+    "filename_prefix"
+   ],
+   "hidden": [
+    "prompt",
+    "extra_pnginfo"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "images"
+  ],
+  "name": "SaveImage",
+  "display_name": "Save Image",
+  "description": "Saves the input images to your ComfyUI output directory.",
+  "python_module": "nodes",
+  "category": "image",
+  "output_node": true,
+  "has_intermediate_output": false,
+  "search_aliases": [
+   "save",
+   "save image",
+   "export image",
+   "output image",
+   "write image",
+   "download"
+  ],
+  "essentials_category": "Basics"
+ },
+ "UnetLoaderGGUF": {
+  "input": {
+   "required": {
+    "unet_name": [
+     [
+      "Wan2.2-I2V-A14B-HighNoise-Q5_K_M.gguf",
+      "Wan2.2-I2V-A14B-LowNoise-Q5_K_M.gguf",
+      "wan2.1-i2v-14b-480p-Q5_K_M.gguf"
+     ]
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "unet_name"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MODEL"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MODEL"
+  ],
+  "name": "UnetLoaderGGUF",
+  "display_name": "Unet Loader (GGUF)",
+  "description": "",
+  "python_module": "custom_nodes.ComfyUI-GGUF",
+  "category": "bootleg",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "LoraLoaderModelOnly": {
+  "input": {
+   "required": {
+    "model": [
+     "MODEL"
+    ],
+    "lora_name": [
+     [
+      "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+      "wan2.2_i2v_lightx2v_4steps_lora_v1_high_noise.safetensors",
+      "wan2.2_i2v_lightx2v_4steps_lora_v1_low_noise.safetensors"
+     ]
+    ],
+    "strength_model": [
+     "FLOAT",
+     {
+      "default": 1.0,
+      "min": -100.0,
+      "max": 100.0,
+      "step": 0.01
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model",
+    "lora_name",
+    "strength_model"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MODEL"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MODEL"
+  ],
+  "name": "LoraLoaderModelOnly",
+  "display_name": "Load LoRA",
+  "description": "This LoRAs loader is used to modify the diffusion model, altering the way in which latents are denoised such as applying styles. Multiple LoRA nodes can be linked together.",
+  "python_module": "nodes",
+  "category": "model/loaders",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "output_tooltips": [
+   "The modified diffusion model.",
+   "The modified CLIP model."
+  ],
+  "search_aliases": [
+   "lora",
+   "load lora",
+   "apply lora",
+   "lora loader",
+   "lora model"
+  ],
+  "essentials_category": "Image Generation"
+ },
+ "ModelPatchLoader": {
+  "input": {
+   "required": {
+    "name": [
+     [
+      "wan2.1_infiniteTalk_single_fp16.safetensors"
+     ]
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "name"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MODEL_PATCH"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MODEL_PATCH"
+  ],
+  "name": "ModelPatchLoader",
+  "display_name": "Load Model Patch",
+  "description": "",
+  "python_module": "comfy_extras.nodes_model_patch",
+  "category": "model/loaders",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "experimental": true,
+  "search_aliases": []
+ },
+ "AudioEncoderLoader": {
+  "input": {
+   "required": {
+    "audio_encoder_name": [
+     "COMBO",
+     {
+      "multiselect": false,
+      "options": [
+       "wav2vec2-chinese-base_fp16.safetensors"
+      ]
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "audio_encoder_name"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "AUDIO_ENCODER"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "AUDIO_ENCODER"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "AudioEncoderLoader",
+  "display_name": "Load Audio Encoder",
+  "description": "",
+  "python_module": "comfy_extras.nodes_audio_encoder",
+  "category": "model/loaders",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "LoadAudio": {
+  "input": {
+   "required": {
+    "audio": [
+     "COMBO",
+     {
+      "multiselect": false,
+      "options": [
+       "vc_source.wav",
+       "vc_target.wav",
+       "voice_ref.wav"
+      ],
+      "audio_upload": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "audio"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "AUDIO"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "AUDIO"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "LoadAudio",
+  "display_name": "Load Audio",
+  "description": "",
+  "python_module": "comfy_extras.nodes_audio",
+  "category": "audio",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "import audio",
+   "open audio",
+   "audio file"
+  ],
+  "essentials_category": "Audio",
+  "has_intermediate_output": false
+ },
+ "AudioEncoderEncode": {
+  "input": {
+   "required": {
+    "audio_encoder": [
+     "AUDIO_ENCODER",
+     {}
+    ],
+    "audio": [
+     "AUDIO",
+     {}
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "audio_encoder",
+    "audio"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "AUDIO_ENCODER_OUTPUT"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "AUDIO_ENCODER_OUTPUT"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "AudioEncoderEncode",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_audio_encoder",
+  "category": "model/conditioning",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "WanInfiniteTalkToVideo": {
+  "input": {
+   "required": {
+    "mode": [
+     "COMFY_DYNAMICCOMBO_V3",
+     {
+      "options": [
+       {
+        "key": "single_speaker",
+        "inputs": {
+         "required": {}
+        }
+       },
+       {
+        "key": "two_speakers",
+        "inputs": {
+         "required": {},
+         "optional": {
+          "audio_encoder_output_2": [
+           "AUDIO_ENCODER_OUTPUT",
+           {}
+          ],
+          "mask_1": [
+           "MASK",
+           {
+            "tooltip": "Mask for the first speaker, required if using two audio inputs."
+           }
+          ],
+          "mask_2": [
+           "MASK",
+           {
+            "tooltip": "Mask for the second speaker, required if using two audio inputs."
+           }
+          ]
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "model": [
+     "MODEL",
+     {}
+    ],
+    "model_patch": [
+     "MODEL_PATCH",
+     {}
+    ],
+    "positive": [
+     "CONDITIONING",
+     {}
+    ],
+    "negative": [
+     "CONDITIONING",
+     {}
+    ],
+    "vae": [
+     "VAE",
+     {}
+    ],
+    "width": [
+     "INT",
+     {
+      "default": 832,
+      "min": 16,
+      "max": 16384,
+      "step": 16
+     }
+    ],
+    "height": [
+     "INT",
+     {
+      "default": 480,
+      "min": 16,
+      "max": 16384,
+      "step": 16
+     }
+    ],
+    "length": [
+     "INT",
+     {
+      "default": 81,
+      "min": 1,
+      "max": 16384,
+      "step": 4
+     }
+    ],
+    "audio_encoder_output_1": [
+     "AUDIO_ENCODER_OUTPUT",
+     {}
+    ],
+    "motion_frame_count": [
+     "INT",
+     {
+      "tooltip": "Number of previous frames to use as motion context.",
+      "advanced": true,
+      "default": 9,
+      "min": 1,
+      "max": 33,
+      "step": 1
+     }
+    ],
+    "audio_scale": [
+     "FLOAT",
+     {
+      "default": 1.0,
+      "min": -10.0,
+      "max": 10.0,
+      "step": 0.01
+     }
+    ]
+   },
+   "optional": {
+    "clip_vision_output": [
+     "CLIP_VISION_OUTPUT",
+     {}
+    ],
+    "start_image": [
+     "IMAGE",
+     {}
+    ],
+    "previous_frames": [
+     "IMAGE",
+     {}
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "mode",
+    "model",
+    "model_patch",
+    "positive",
+    "negative",
+    "vae",
+    "width",
+    "height",
+    "length",
+    "audio_encoder_output_1",
+    "motion_frame_count",
+    "audio_scale"
+   ],
+   "optional": [
+    "clip_vision_output",
+    "start_image",
+    "previous_frames"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MODEL",
+   "CONDITIONING",
+   "CONDITIONING",
+   "LATENT",
+   "INT"
+  ],
+  "output_is_list": [
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "output_name": [
+   "model",
+   "positive",
+   "negative",
+   "latent",
+   "trim_image"
+  ],
+  "output_tooltips": [
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "WanInfiniteTalkToVideo",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_wan",
+  "category": "model/conditioning/wan/infinite talk",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "BasicScheduler": {
+  "input": {
+   "required": {
+    "model": [
+     "MODEL",
+     {}
+    ],
+    "scheduler": [
+     "COMBO",
+     {
+      "multiselect": false,
+      "options": [
+       "simple",
+       "sgm_uniform",
+       "karras",
+       "exponential",
+       "ddim_uniform",
+       "beta",
+       "normal",
+       "linear_quadratic",
+       "kl_optimal"
+      ]
+     }
+    ],
+    "steps": [
+     "INT",
+     {
+      "default": 20,
+      "min": 1,
+      "max": 10000
+     }
+    ],
+    "denoise": [
+     "FLOAT",
+     {
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model",
+    "scheduler",
+    "steps",
+    "denoise"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "SIGMAS"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "SIGMAS"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "BasicScheduler",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_custom_sampler",
+  "category": "model/sampling/schedulers",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "ImageFromBatch": {
+  "input": {
+   "required": {
+    "image": [
+     "IMAGE",
+     {}
+    ],
+    "batch_index": [
+     "INT",
+     {
+      "default": 0,
+      "min": -16384,
+      "max": 16384
+     }
+    ],
+    "length": [
+     "INT",
+     {
+      "default": 1,
+      "min": 1,
+      "max": 4096
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "image",
+    "batch_index",
+    "length"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "ImageFromBatch",
+  "display_name": "Get Image from Batch",
+  "description": "",
+  "python_module": "comfy_extras.nodes_images",
+  "category": "image/batch",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "select image",
+   "pick from batch",
+   "extract image"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "ImageBatch": {
+  "input": {
+   "required": {
+    "image1": [
+     "IMAGE"
+    ],
+    "image2": [
+     "IMAGE"
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "image1",
+    "image2"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "name": "ImageBatch",
+  "display_name": "Batch Images (DEPRECATED)",
+  "description": "",
+  "python_module": "nodes",
+  "category": "image/batch",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "deprecated": true,
+  "search_aliases": [
+   "combine images",
+   "merge images",
+   "stack images"
+  ]
+ },
+ "CreateVideo": {
+  "input": {
+   "required": {
+    "images": [
+     "IMAGE",
+     {
+      "tooltip": "The images to create a video from."
+     }
+    ],
+    "fps": [
+     "FLOAT",
+     {
+      "default": 30.0,
+      "min": 1.0,
+      "max": 120.0,
+      "step": 1.0
+     }
+    ]
+   },
+   "optional": {
+    "audio": [
+     "AUDIO",
+     {
+      "tooltip": "The audio to add to the video."
+     }
+    ],
+    "bit_depth": [
+     "COMBO",
+     {
+      "tooltip": "Auto uses 8-bit for sRGB and 10-bit for HDR. Explicit 8-bit and 10-bit choices are independent of colorspace.",
+      "default": "auto",
+      "multiselect": false,
+      "options": [
+       "auto",
+       8,
+       10
+      ]
+     }
+    ],
+    "color_space": [
+     "COMBO",
+     {
+      "tooltip": "Colorspace of the input images. HDR selects BT.2020/HLG and HDR PQ selects BT.2020/PQ.",
+      "default": "sRGB",
+      "multiselect": false,
+      "options": [
+       "sRGB",
+       "HDR",
+       "HDR PQ"
+      ]
+     }
+    ],
+    "codec": [
+     "COMBO",
+     {
+      "tooltip": "Optionally encode the video immediately. None keeps the images in tensor form; Auto uses H.264.",
+      "advanced": true,
+      "default": "none",
+      "multiselect": false,
+      "options": [
+       "none",
+       "auto",
+       "h264",
+       "av1"
+      ]
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "images",
+    "fps"
+   ],
+   "optional": [
+    "audio",
+    "bit_depth",
+    "color_space",
+    "codec"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "VIDEO"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "VIDEO"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "CreateVideo",
+  "display_name": "Create Video",
+  "description": "Create a video from images.",
+  "python_module": "comfy_extras.nodes_video",
+  "category": "video",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "images to video"
+  ],
+  "essentials_category": "Video Tools",
+  "has_intermediate_output": false
+ },
+ "SaveVideo": {
+  "input": {
+   "required": {
+    "video": [
+     "VIDEO",
+     {
+      "tooltip": "The video to save."
+     }
+    ],
+    "filename_prefix": [
+     "STRING",
+     {
+      "tooltip": "The prefix for the file to save. This may include formatting information such as %date:yyyy-MM-dd% or %Empty Latent Image.width% to include values from nodes.",
+      "default": "video/ComfyUI",
+      "multiline": false
+     }
+    ],
+    "format": [
+     "COMFY_DYNAMICCOMBO_V3",
+     {
+      "tooltip": "The output container. Auto uses MP4 for Auto/H.264 and WebM for AV1. MP4, MKV, and WebM select a specific container.",
+      "options": [
+       {
+        "key": "auto",
+        "inputs": {
+         "required": {
+          "codec": [
+           "COMFY_DYNAMICCOMBO_V3",
+           {
+            "tooltip": "The output video codec. Auto preserves a compatible source stream. H.264 and AV1 re-encoding support SDR, HDR (HLG), and HDR PQ.",
+            "options": [
+             {
+              "key": "auto",
+              "inputs": {
+               "required": {}
+              }
+             },
+             {
+              "key": "h264",
+              "inputs": {
+               "required": {},
+               "optional": {
+                "encoding": [
+                 "COMFY_DYNAMICCOMBO_V3",
+                 {
+                  "display_name": "encoding mode",
+                  "tooltip": "Automatic preserves compatible H.264 streams. Re-encode applies custom encoding options.",
+                  "options": [
+                   {
+                    "key": "auto",
+                    "inputs": {
+                     "required": {}
+                    }
+                   },
+                   {
+                    "key": "re-encode",
+                    "inputs": {
+                     "required": {
+                      "crf": [
+                       "FLOAT",
+                       {
+                        "tooltip": "Lower values produce higher quality and larger files.",
+                        "default": 18.0,
+                        "min": 0.0,
+                        "max": 51.0,
+                        "step": 1.0
+                       }
+                      ]
+                     }
+                    }
+                   }
+                  ]
+                 }
+                ]
+               }
+              }
+             },
+             {
+              "key": "av1",
+              "inputs": {
+               "required": {},
+               "optional": {
+                "encoding": [
+                 "COMFY_DYNAMICCOMBO_V3",
+                 {
+                  "display_name": "encoding mode",
+                  "tooltip": "Automatic preserves compatible AV1 streams. Re-encode applies custom encoding options.",
+                  "options": [
+                   {
+                    "key": "auto",
+                    "inputs": {
+                     "required": {}
+                    }
+                   },
+                   {
+                    "key": "re-encode",
+                    "inputs": {
+                     "required": {
+                      "crf": [
+                       "FLOAT",
+                       {
+                        "tooltip": "Lower values produce higher quality and larger files.",
+                        "default": 24.0,
+                        "min": 0.0,
+                        "max": 63.0,
+                        "step": 1.0
+                       }
+                      ]
+                     }
+                    }
+                   }
+                  ]
+                 }
+                ]
+               }
+              }
+             }
+            ]
+           }
+          ]
+         }
+        }
+       },
+       {
+        "key": "mp4",
+        "inputs": {
+         "required": {
+          "codec": [
+           "COMFY_DYNAMICCOMBO_V3",
+           {
+            "tooltip": "The output video codec. Auto preserves a compatible source stream. H.264 and AV1 re-encoding support SDR, HDR (HLG), and HDR PQ.",
+            "options": [
+             {
+              "key": "auto",
+              "inputs": {
+               "required": {}
+              }
+             },
+             {
+              "key": "h264",
+              "inputs": {
+               "required": {},
+               "optional": {
+                "encoding": [
+                 "COMFY_DYNAMICCOMBO_V3",
+                 {
+                  "display_name": "encoding mode",
+                  "tooltip": "Automatic preserves compatible H.264 streams. Re-encode applies custom encoding options.",
+                  "options": [
+                   {
+                    "key": "auto",
+                    "inputs": {
+                     "required": {}
+                    }
+                   },
+                   {
+                    "key": "re-encode",
+                    "inputs": {
+                     "required": {
+                      "crf": [
+                       "FLOAT",
+                       {
+                        "tooltip": "Lower values produce higher quality and larger files.",
+                        "default": 18.0,
+                        "min": 0.0,
+                        "max": 51.0,
+                        "step": 1.0
+                       }
+                      ]
+                     }
+                    }
+                   }
+                  ]
+                 }
+                ]
+               }
+              }
+             },
+             {
+              "key": "av1",
+              "inputs": {
+               "required": {},
+               "optional": {
+                "encoding": [
+                 "COMFY_DYNAMICCOMBO_V3",
+                 {
+                  "display_name": "encoding mode",
+                  "tooltip": "Automatic preserves compatible AV1 streams. Re-encode applies custom encoding options.",
+                  "options": [
+                   {
+                    "key": "auto",
+                    "inputs": {
+                     "required": {}
+                    }
+                   },
+                   {
+                    "key": "re-encode",
+                    "inputs": {
+                     "required": {
+                      "crf": [
+                       "FLOAT",
+                       {
+                        "tooltip": "Lower values produce higher quality and larger files.",
+                        "default": 24.0,
+                        "min": 0.0,
+                        "max": 63.0,
+                        "step": 1.0
+                       }
+                      ]
+                     }
+                    }
+                   }
+                  ]
+                 }
+                ]
+               }
+              }
+             }
+            ]
+           }
+          ]
+         }
+        }
+       },
+       {
+        "key": "mkv",
+        "inputs": {
+         "required": {
+          "codec": [
+           "COMFY_DYNAMICCOMBO_V3",
+           {
+            "tooltip": "The output video codec. Auto preserves a compatible source stream. H.264 and AV1 re-encoding support SDR, HDR (HLG), and HDR PQ.",
+            "options": [
+             {
+              "key": "auto",
+              "inputs": {
+               "required": {}
+              }
+             },
+             {
+              "key": "h264",
+              "inputs": {
+               "required": {},
+               "optional": {
+                "encoding": [
+                 "COMFY_DYNAMICCOMBO_V3",
+                 {
+                  "display_name": "encoding mode",
+                  "tooltip": "Automatic preserves compatible H.264 streams. Re-encode applies custom encoding options.",
+                  "options": [
+                   {
+                    "key": "auto",
+                    "inputs": {
+                     "required": {}
+                    }
+                   },
+                   {
+                    "key": "re-encode",
+                    "inputs": {
+                     "required": {
+                      "crf": [
+                       "FLOAT",
+                       {
+                        "tooltip": "Lower values produce higher quality and larger files.",
+                        "default": 18.0,
+                        "min": 0.0,
+                        "max": 51.0,
+                        "step": 1.0
+                       }
+                      ]
+                     }
+                    }
+                   }
+                  ]
+                 }
+                ]
+               }
+              }
+             },
+             {
+              "key": "av1",
+              "inputs": {
+               "required": {},
+               "optional": {
+                "encoding": [
+                 "COMFY_DYNAMICCOMBO_V3",
+                 {
+                  "display_name": "encoding mode",
+                  "tooltip": "Automatic preserves compatible AV1 streams. Re-encode applies custom encoding options.",
+                  "options": [
+                   {
+                    "key": "auto",
+                    "inputs": {
+                     "required": {}
+                    }
+                   },
+                   {
+                    "key": "re-encode",
+                    "inputs": {
+                     "required": {
+                      "crf": [
+                       "FLOAT",
+                       {
+                        "tooltip": "Lower values produce higher quality and larger files.",
+                        "default": 24.0,
+                        "min": 0.0,
+                        "max": 63.0,
+                        "step": 1.0
+                       }
+                      ]
+                     }
+                    }
+                   }
+                  ]
+                 }
+                ]
+               }
+              }
+             }
+            ]
+           }
+          ]
+         }
+        }
+       },
+       {
+        "key": "webm",
+        "inputs": {
+         "required": {
+          "codec": [
+           "COMFY_DYNAMICCOMBO_V3",
+           {
+            "tooltip": "The output video codec. Auto preserves a compatible source stream. H.264 and AV1 re-encoding support SDR, HDR (HLG), and HDR PQ.",
+            "options": [
+             {
+              "key": "auto",
+              "inputs": {
+               "required": {}
+              }
+             },
+             {
+              "key": "av1",
+              "inputs": {
+               "required": {},
+               "optional": {
+                "encoding": [
+                 "COMFY_DYNAMICCOMBO_V3",
+                 {
+                  "display_name": "encoding mode",
+                  "tooltip": "Automatic preserves compatible AV1 streams. Re-encode applies custom encoding options.",
+                  "options": [
+                   {
+                    "key": "auto",
+                    "inputs": {
+                     "required": {}
+                    }
+                   },
+                   {
+                    "key": "re-encode",
+                    "inputs": {
+                     "required": {
+                      "crf": [
+                       "FLOAT",
+                       {
+                        "tooltip": "Lower values produce higher quality and larger files.",
+                        "default": 24.0,
+                        "min": 0.0,
+                        "max": 63.0,
+                        "step": 1.0
+                       }
+                      ]
+                     }
+                    }
+                   }
+                  ]
+                 }
+                ]
+               }
+              }
+             }
+            ]
+           }
+          ]
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "optional": {
+    "codec": [
+     "COMFY_DYNAMICCOMBO_V3",
+     {
+      "tooltip": "The output video codec. Auto preserves a compatible source stream. H.264 and AV1 re-encoding support SDR, HDR (HLG), and HDR PQ.",
+      "hidden": true,
+      "options": [
+       {
+        "key": "auto",
+        "inputs": {
+         "required": {}
+        }
+       },
+       {
+        "key": "h264",
+        "inputs": {
+         "required": {},
+         "optional": {
+          "encoding": [
+           "COMFY_DYNAMICCOMBO_V3",
+           {
+            "display_name": "encoding mode",
+            "tooltip": "Automatic preserves compatible H.264 streams. Re-encode applies custom encoding options.",
+            "options": [
+             {
+              "key": "auto",
+              "inputs": {
+               "required": {}
+              }
+             },
+             {
+              "key": "re-encode",
+              "inputs": {
+               "required": {
+                "crf": [
+                 "FLOAT",
+                 {
+                  "tooltip": "Lower values produce higher quality and larger files.",
+                  "default": 18.0,
+                  "min": 0.0,
+                  "max": 51.0,
+                  "step": 1.0
+                 }
+                ]
+               }
+              }
+             }
+            ]
+           }
+          ]
+         }
+        }
+       },
+       {
+        "key": "av1",
+        "inputs": {
+         "required": {},
+         "optional": {
+          "encoding": [
+           "COMFY_DYNAMICCOMBO_V3",
+           {
+            "display_name": "encoding mode",
+            "tooltip": "Automatic preserves compatible AV1 streams. Re-encode applies custom encoding options.",
+            "options": [
+             {
+              "key": "auto",
+              "inputs": {
+               "required": {}
+              }
+             },
+             {
+              "key": "re-encode",
+              "inputs": {
+               "required": {
+                "crf": [
+                 "FLOAT",
+                 {
+                  "tooltip": "Lower values produce higher quality and larger files.",
+                  "default": 24.0,
+                  "min": 0.0,
+                  "max": 63.0,
+                  "step": 1.0
+                 }
+                ]
+               }
+              }
+             }
+            ]
+           }
+          ]
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "hidden": {
+    "prompt": [
+     "PROMPT"
+    ],
+    "extra_pnginfo": [
+     "EXTRA_PNGINFO"
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "video",
+    "filename_prefix",
+    "format"
+   ],
+   "optional": [
+    "codec"
+   ],
+   "hidden": [
+    "prompt",
+    "extra_pnginfo"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "VIDEO"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "video"
+  ],
+  "output_tooltips": [
+   "The input video, unchanged."
+  ],
+  "output_matchtypes": null,
+  "name": "SaveVideo",
+  "display_name": "Save Video",
+  "description": "Saves the input videos to your ComfyUI output directory.",
+  "python_module": "comfy_extras.nodes_video",
+  "category": "video",
+  "output_node": true,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "export video"
+  ],
+  "essentials_category": "Basics",
+  "has_intermediate_output": false
+ },
+ "ChatterboxTTS": {
+  "input": {
+   "required": {
+    "model_pack_name": [
+     "COMBO",
+     {
+      "tooltip": "Select the Chatterbox voice model pack to use for generation.",
+      "default": "resembleai_default_voice",
+      "multiselect": false,
+      "options": [
+       "resembleai_default_voice"
+      ]
+     }
+    ],
+    "text": [
+     "STRING",
+     {
+      "tooltip": "Text to be synthesized into speech.",
+      "default": "Hello, this is a test of Chatterbox TTS in ComfyUI.",
+      "multiline": true
+     }
+    ],
+    "max_new_tokens": [
+     "INT",
+     {
+      "tooltip": "Maximum number of audio tokens to generate. 25 tokens ≈ 1 second. The hard limit is 4096 tokens (≈ 163 seconds).",
+      "default": 1000,
+      "min": 16,
+      "max": 4000,
+      "step": 8
+     }
+    ],
+    "flow_cfg_scale": [
+     "FLOAT",
+     {
+      "tooltip": "CFG scale for the mel spectrogram decoder (flow matching). Higher values increase adherence to content and timbre but may reduce naturalness.",
+      "default": 0.7,
+      "min": 0.0,
+      "max": 2.0,
+      "step": 0.05
+     }
+    ],
+    "exaggeration": [
+     "FLOAT",
+     {
+      "tooltip": "Controls the expressiveness and emotional intensity. Higher values lead to more exaggerated prosody.",
+      "default": 0.5,
+      "min": 0.25,
+      "max": 2.0,
+      "step": 0.05
+     }
+    ],
+    "temperature": [
+     "FLOAT",
+     {
+      "tooltip": "Controls the randomness of the sampling process. Higher values produce more diverse speech, while lower values are more deterministic.",
+      "default": 0.8,
+      "min": 0.05,
+      "max": 5.0,
+      "step": 0.05
+     }
+    ],
+    "cfg_weight": [
+     "FLOAT",
+     {
+      "tooltip": "Classifier-Free Guidance (CFG) weight. Controls how strongly the model adheres to the text prompt. Higher values may reduce naturalness. Ignored by Turbo-family packs: their sampler has no CFG.",
+      "default": 0.5,
+      "min": 0.2,
+      "max": 1.0,
+      "step": 0.05
+     }
+    ],
+    "repetition_penalty": [
+     "FLOAT",
+     {
+      "tooltip": "Penalizes repeated tokens to discourage monotonous or repetitive speech. A value of 1.0 means no penalty.",
+      "default": 1.2,
+      "min": 1.0,
+      "max": 2.0,
+      "step": 0.1
+     }
+    ],
+    "min_p": [
+     "FLOAT",
+     {
+      "tooltip": "Sets a minimum probability threshold for nucleus sampling (Min-P). Filters out tokens with very low probability. Ignored by Turbo-family packs: their sampler has no min-p.",
+      "default": 0.05,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01
+     }
+    ],
+    "top_p": [
+     "FLOAT",
+     {
+      "tooltip": "Nucleus sampling (Top-P) parameter. The model samples from the smallest set of tokens whose cumulative probability exceeds this value.",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01
+     }
+    ],
+    "seed": [
+     "INT",
+     {
+      "tooltip": "Seed for random number generation. A value of 0 will use a random seed.",
+      "default": 0,
+      "min": 0,
+      "max": 18446744073709551615,
+      "control_after_generate": true
+     }
+    ],
+    "use_watermark": [
+     "BOOLEAN",
+     {
+      "tooltip": "Enable or disable the audio watermark. Requires 'resemble-perth' to be installed.",
+      "default": false
+     }
+    ],
+    "device": [
+     "COMBO",
+     {
+      "tooltip": "Device to run inference on. 'auto' follows ComfyUI's default compute device.",
+      "default": "default",
+      "multiselect": false,
+      "options": [
+       "default",
+       "cpu",
+       "auto"
+      ]
+     }
+    ],
+    "dtype": [
+     "COMBO",
+     {
+      "tooltip": "Data type for model precision. 'auto' lets ComfyUI pick the best type for the target device.",
+      "default": "auto",
+      "multiselect": false,
+      "options": [
+       "auto",
+       "bf16",
+       "fp16",
+       "fp32"
+      ]
+     }
+    ],
+    "attention_mode": [
+     "COMBO",
+     {
+      "tooltip": "Attention implementation. Backends this machine cannot run are left out of the dropdown; a saved graph that names one anyway falls back to 'sdpa'.",
+      "default": "sdpa",
+      "multiselect": false,
+      "options": [
+       "eager",
+       "sdpa"
+      ]
+     }
+    ],
+    "top_k": [
+     "INT",
+     {
+      "tooltip": "Limit sampling to the K most likely tokens. 1 is fully greedy, 5000 is effectively unrestricted. Turbo-family packs only (Turbo and Nano): classic, multilingual and Flash packs have no top-k and ignore this.",
+      "default": 1000,
+      "min": 1,
+      "max": 5000,
+      "step": 1
+     }
+    ],
+    "normalize_loudness": [
+     "BOOLEAN",
+     {
+      "tooltip": "Normalise the reference clip to a consistent loudness before cloning it. Skipped with a warning when the optional 'pyloudnorm' library is not installed. Turbo-family packs only; ignored by classic and multilingual packs.",
+      "default": true
+     }
+    ],
+    "num_steps": [
+     "INT",
+     {
+      "tooltip": "How many block-diffusion denoising steps to run. Fewer steps are faster but rougher; the upstream default of 10 matches the paper's best configuration. Flash packs only; every other family ignores this.",
+      "default": 10,
+      "min": 1,
+      "max": 128,
+      "step": 1
+     }
+    ],
+    "cfg_scale": [
+     "FLOAT",
+     {
+      "tooltip": "Block-diffusion classifier-free guidance scale. 1.0 (the upstream default) means no guidance; values above 1 trade naturalness for prompt adherence. Flash packs only; every other family ignores this.",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 3.0,
+      "step": 0.05
+     }
+    ]
+   },
+   "optional": {
+    "audio_prompt": [
+     "AUDIO",
+     {
+      "tooltip": "Reference audio to clone the voice from. When left unconnected the pack's built-in voice is used. Flash packs ship no built-in voice: a reference clip is required for them."
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model_pack_name",
+    "text",
+    "max_new_tokens",
+    "flow_cfg_scale",
+    "exaggeration",
+    "temperature",
+    "cfg_weight",
+    "repetition_penalty",
+    "min_p",
+    "top_p",
+    "seed",
+    "use_watermark",
+    "device",
+    "dtype",
+    "attention_mode",
+    "top_k",
+    "normalize_loudness",
+    "num_steps",
+    "cfg_scale"
+   ],
+   "optional": [
+    "audio_prompt"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "AUDIO"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "audio"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "ChatterboxTTS",
+  "display_name": "Chatterbox TTS 📢",
+  "description": "Synthesise speech from text with a Chatterbox voice pack. Optionally clone a voice from a reference clip.",
+  "python_module": "custom_nodes.ComfyUI-Chatterbox",
+  "category": "WMNodes/sound/tts",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "ChatterboxVC": {
+  "input": {
+   "required": {
+    "model_pack_name": [
+     "COMBO",
+     {
+      "tooltip": "Select the Chatterbox voice model pack to use for conversion.",
+      "default": "resembleai_default_voice",
+      "multiselect": false,
+      "options": [
+       "resembleai_default_voice"
+      ]
+     }
+    ],
+    "source_audio": [
+     "AUDIO",
+     {
+      "tooltip": "The audio containing the speech content to be converted."
+     }
+    ],
+    "n_timesteps": [
+     "INT",
+     {
+      "tooltip": "Number of diffusion steps for the flow matching process. Higher values may improve quality at the cost of speed.",
+      "default": 10,
+      "min": 2,
+      "max": 50,
+      "step": 1
+     }
+    ],
+    "temperature": [
+     "FLOAT",
+     {
+      "tooltip": "Controls the randomness of the initial noise. 1.0 is standard. Lower values are more deterministic.",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 2.0,
+      "step": 0.05
+     }
+    ],
+    "flow_cfg_scale": [
+     "FLOAT",
+     {
+      "tooltip": "CFG scale for the mel spectrogram decoder. Higher values increase adherence to the target voice but may reduce naturalness.",
+      "default": 0.7,
+      "min": 0.0,
+      "max": 2.0,
+      "step": 0.05
+     }
+    ],
+    "use_watermark": [
+     "BOOLEAN",
+     {
+      "tooltip": "Enable or disable the audio watermark. Requires 'resemble-perth' to be installed.",
+      "default": false
+     }
+    ],
+    "device": [
+     "COMBO",
+     {
+      "tooltip": "Device to run inference on. 'auto' follows ComfyUI's default compute device.",
+      "default": "default",
+      "multiselect": false,
+      "options": [
+       "default",
+       "cpu",
+       "auto"
+      ]
+     }
+    ],
+    "dtype": [
+     "COMBO",
+     {
+      "tooltip": "Data type for model precision. 'auto' lets ComfyUI pick the best type for the target device.",
+      "default": "auto",
+      "multiselect": false,
+      "options": [
+       "auto",
+       "bf16",
+       "fp16",
+       "fp32"
+      ]
+     }
+    ],
+    "attention_mode": [
+     "COMBO",
+     {
+      "tooltip": "Attention implementation. Backends this machine cannot run are left out of the dropdown; a saved graph that names one anyway falls back to 'sdpa'.",
+      "default": "sdpa",
+      "multiselect": false,
+      "options": [
+       "eager",
+       "sdpa"
+      ]
+     }
+    ],
+    "refinement_passes": [
+     "INT",
+     {
+      "tooltip": "Run the conversion this many times, feeding each iteration's output back in as the next one's input.\n\nRecommended maximum is 5; more passes cause audible distortion. Each iteration is deterministic, so raising this on a clip you already converted returns the cached result rather than redoing the work -- the cache keeps 5 iterations.",
+      "default": 1,
+      "min": 1,
+      "max": 30,
+      "step": 1
+     }
+    ],
+    "max_chunk_duration": [
+     "FLOAT",
+     {
+      "tooltip": "Split source audio longer than this many seconds before converting it, and join the results afterwards. Bounds the peak memory of one conversion, which is what overflows on a long recording.\n\n0 disables chunking and converts the clip in one pass. 5 seconds is the smallest useful value.",
+      "default": 30.0,
+      "min": 0.0,
+      "max": 300.0,
+      "step": 5.0
+     }
+    ],
+    "chunk_method": [
+     "COMBO",
+     {
+      "tooltip": "Where to cut when 'max_chunk_duration' splits the source.\n\nsmart: cut as close to silence as possible near the ideal boundary. A boundary in a pause is inaudible.\nfixed: cut at exact intervals. Cheaper, and the joins are more audible.",
+      "default": "smart",
+      "multiselect": false,
+      "options": [
+       "smart",
+       "fixed"
+      ]
+     }
+    ]
+   },
+   "optional": {
+    "target_voice_audio": [
+     "AUDIO",
+     {
+      "tooltip": "The audio file containing the target voice timbre. If not provided, the default voice from the model pack will be used."
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model_pack_name",
+    "source_audio",
+    "n_timesteps",
+    "temperature",
+    "flow_cfg_scale",
+    "use_watermark",
+    "device",
+    "dtype",
+    "attention_mode",
+    "refinement_passes",
+    "max_chunk_duration",
+    "chunk_method"
+   ],
+   "optional": [
+    "target_voice_audio"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "AUDIO"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "converted_audio"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "ChatterboxVC",
+  "display_name": "Chatterbox Voice Conversion 🗣️",
+  "description": "Convert recorded speech into a Chatterbox voice while keeping the words and the delivery.",
+  "python_module": "custom_nodes.ComfyUI-Chatterbox",
+  "category": "WMNodes/sound/vc",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "SaveAudio": {
+  "input": {
+   "required": {
+    "audio": [
+     "AUDIO",
+     {}
+    ],
+    "filename_prefix": [
+     "STRING",
+     {
+      "default": "audio/ComfyUI",
+      "multiline": false
+     }
+    ]
+   },
+   "hidden": {
+    "prompt": [
+     "PROMPT"
+    ],
+    "extra_pnginfo": [
+     "EXTRA_PNGINFO"
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "audio",
+    "filename_prefix"
+   ],
+   "hidden": [
+    "prompt",
+    "extra_pnginfo"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "AUDIO"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "audio"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "SaveAudio",
+  "display_name": "Save Audio (FLAC) (DEPRECATED)",
+  "description": "",
+  "python_module": "comfy_extras.nodes_audio",
+  "category": "audio",
+  "output_node": true,
+  "deprecated": true,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "export flac"
+  ],
+  "essentials_category": "Audio",
+  "has_intermediate_output": false
+ },
+ "LoadVideo": {
+  "input": {
+   "required": {
+    "file": [
+     "COMBO",
+     {
+      "multiselect": false,
+      "options": [],
+      "video_upload": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "file"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "VIDEO"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "VIDEO"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "LoadVideo",
+  "display_name": "Load Video",
+  "description": "",
+  "python_module": "comfy_extras.nodes_video",
+  "category": "video",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "import video",
+   "open video",
+   "video file"
+  ],
+  "essentials_category": "Basics",
+  "has_intermediate_output": true
+ },
+ "GetVideoComponents": {
+  "input": {
+   "required": {
+    "video": [
+     "VIDEO",
+     {
+      "tooltip": "The video to extract components from."
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "video"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE",
+   "AUDIO",
+   "FLOAT",
+   "COMBO",
+   "COMBO"
+  ],
+  "output_is_list": [
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "output_name": [
+   "images",
+   "audio",
+   "fps",
+   "bit_depth",
+   "color_space"
+  ],
+  "output_tooltips": [
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "GetVideoComponents",
+  "display_name": "Get Video Components",
+  "description": "Extracts video frames, audio, frame rate, bit depth, and color space.",
+  "python_module": "comfy_extras.nodes_video",
+  "category": "video",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "extract frames",
+   "split video",
+   "video to images",
+   "demux"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "FrameInterpolate": {
+  "input": {
+   "required": {
+    "interp_model": [
+     "INTERP_MODEL",
+     {}
+    ],
+    "images": [
+     "IMAGE",
+     {}
+    ],
+    "multiplier": [
+     "INT",
+     {
+      "default": 2,
+      "min": 2,
+      "max": 16
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "interp_model",
+    "images",
+    "multiplier"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "FrameInterpolate",
+  "display_name": "Run Frame Interpolation Model",
+  "description": "",
+  "python_module": "comfy_extras.nodes_frame_interpolation",
+  "category": "video",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "rife",
+   "film",
+   "frame interpolation",
+   "slow motion",
+   "interpolate frames",
+   "vfi"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "FrameInterpolationModelLoader": {
+  "input": {
+   "required": {
+    "model_name": [
+     "COMBO",
+     {
+      "tooltip": "Select a frame interpolation model to load. Models must be placed in the 'frame_interpolation' folder.",
+      "multiselect": false,
+      "options": []
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model_name"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "INTERP_MODEL"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "INTERP_MODEL"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "FrameInterpolationModelLoader",
+  "display_name": "Load Frame Interpolation Model",
+  "description": "",
+  "python_module": "comfy_extras.nodes_frame_interpolation",
+  "category": "model/loaders",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "TrimAudioDuration": {
+  "input": {
+   "required": {
+    "audio": [
+     "AUDIO",
+     {}
+    ],
+    "start_index": [
+     "FLOAT",
+     {
+      "tooltip": "Start time in seconds, can be negative to count from the end (supports sub-seconds).",
+      "default": 0.0,
+      "min": -18446744073709551615,
+      "max": 18446744073709551615,
+      "step": 0.01
+     }
+    ],
+    "duration": [
+     "FLOAT",
+     {
+      "tooltip": "Duration in seconds",
+      "default": 60.0,
+      "min": 0.0,
+      "step": 0.01
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "audio",
+    "start_index",
+    "duration"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "AUDIO"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "AUDIO"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "TrimAudioDuration",
+  "display_name": "Trim Audio Duration",
+  "description": "Trim audio tensor into chosen time range.",
+  "python_module": "comfy_extras.nodes_audio",
+  "category": "audio",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "cut audio",
+   "audio clip",
+   "shorten audio"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "ImageScale": {
+  "input": {
+   "required": {
+    "image": [
+     "IMAGE"
+    ],
+    "upscale_method": [
+     [
+      "nearest-exact",
+      "bilinear",
+      "area",
+      "bicubic",
+      "lanczos"
+     ]
+    ],
+    "width": [
+     "INT",
+     {
+      "default": 512,
+      "min": 0,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "height": [
+     "INT",
+     {
+      "default": 512,
+      "min": 0,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "crop": [
+     [
+      "disabled",
+      "center"
+     ]
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "image",
+    "upscale_method",
+    "width",
+    "height",
+    "crop"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "name": "ImageScale",
+  "display_name": "Upscale Image",
+  "description": "",
+  "python_module": "nodes",
+  "category": "image/upscaling",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": [
+   "resize",
+   "resize image",
+   "scale image",
+   "image resize",
+   "zoom",
+   "zoom in",
+   "change size"
+  ],
+  "essentials_category": "Image Tools"
+ },
+ "SolidMask": {
+  "input": {
+   "required": {
+    "value": [
+     "FLOAT",
+     {
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01
+     }
+    ],
+    "width": [
+     "INT",
+     {
+      "default": 512,
+      "min": 1,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "height": [
+     "INT",
+     {
+      "default": 512,
+      "min": 1,
+      "max": 16384,
+      "step": 1
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "value",
+    "width",
+    "height"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MASK"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MASK"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "SolidMask",
+  "display_name": "Create Solid Mask",
+  "description": "",
+  "python_module": "comfy_extras.nodes_mask",
+  "category": "image/mask",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "MaskComposite": {
+  "input": {
+   "required": {
+    "destination": [
+     "MASK",
+     {}
+    ],
+    "source": [
+     "MASK",
+     {}
+    ],
+    "x": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "y": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "operation": [
+     "COMBO",
+     {
+      "multiselect": false,
+      "options": [
+       "multiply",
+       "add",
+       "subtract",
+       "and",
+       "or",
+       "xor"
+      ]
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "destination",
+    "source",
+    "x",
+    "y",
+    "operation"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MASK"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MASK"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "MaskComposite",
+  "display_name": "Combine Masks",
+  "description": "",
+  "python_module": "comfy_extras.nodes_mask",
+  "category": "image/mask",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "combine masks",
+   "blend masks",
+   "layer masks",
+   "masks composition"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "CLIPVisionEncode": {
+  "input": {
+   "required": {
+    "clip_vision": [
+     "CLIP_VISION"
+    ],
+    "image": [
+     "IMAGE"
+    ],
+    "crop": [
+     [
+      "center",
+      "none"
+     ]
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "clip_vision",
+    "image",
+    "crop"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "CLIP_VISION_OUTPUT"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "CLIP_VISION_OUTPUT"
+  ],
+  "name": "CLIPVisionEncode",
+  "display_name": "CLIP Vision Encode",
+  "description": "",
+  "python_module": "nodes",
+  "category": "model/conditioning",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "CLIPVisionLoader": {
+  "input": {
+   "required": {
+    "clip_name": [
+     []
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "clip_name"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "CLIP_VISION"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "CLIP_VISION"
+  ],
+  "name": "CLIPVisionLoader",
+  "display_name": "Load CLIP Vision",
+  "description": "",
+  "python_module": "nodes",
+  "category": "model/loaders",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "CheckpointLoaderSimple": {
+  "input": {
+   "required": {
+    "ckpt_name": [
+     [],
+     {
+      "tooltip": "The name of the checkpoint (model) to load."
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "ckpt_name"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MODEL",
+   "CLIP",
+   "VAE"
+  ],
+  "output_is_list": [
+   false,
+   false,
+   false
+  ],
+  "output_name": [
+   "MODEL",
+   "CLIP",
+   "VAE"
+  ],
+  "name": "CheckpointLoaderSimple",
+  "display_name": "Load Checkpoint",
+  "description": "Loads a diffusion model checkpoint, diffusion models are used to denoise latents.",
+  "python_module": "nodes",
+  "category": "model/loaders",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "output_tooltips": [
+   "The model used for denoising latents.",
+   "The CLIP model used for encoding text prompts.",
+   "The VAE model used for encoding and decoding images to and from latent space."
+  ],
+  "search_aliases": [
+   "load model",
+   "checkpoint",
+   "model loader",
+   "load checkpoint",
+   "ckpt",
+   "model"
+  ]
+ },
+ "CropByBBoxes": {
+  "input": {
+   "required": {
+    "image": [
+     "IMAGE",
+     {}
+    ],
+    "bboxes": [
+     "BOUNDING_BOX",
+     {
+      "default": {
+       "x": 0,
+       "y": 0,
+       "width": 512,
+       "height": 512
+      },
+      "socketless": true,
+      "forceInput": true
+     }
+    ],
+    "output_width": [
+     "INT",
+     {
+      "tooltip": "Width each crop is resized to.",
+      "default": 512,
+      "min": 64,
+      "max": 4096,
+      "step": 8
+     }
+    ],
+    "output_height": [
+     "INT",
+     {
+      "tooltip": "Height each crop is resized to.",
+      "default": 512,
+      "min": 64,
+      "max": 4096,
+      "step": 8
+     }
+    ],
+    "padding": [
+     "INT",
+     {
+      "tooltip": "Extra padding in pixels added on each side of the bbox before cropping.",
+      "default": 0,
+      "min": 0,
+      "max": 1024,
+      "step": 1
+     }
+    ],
+    "keep_aspect": [
+     "COMBO",
+     {
+      "tooltip": "Whether to stretch the crop to fit the output size, or pad with black pixels to preserve aspect ratio.",
+      "default": "stretch",
+      "multiselect": false,
+      "options": [
+       "stretch",
+       "pad"
+      ]
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "image",
+    "bboxes",
+    "output_width",
+    "output_height",
+    "padding",
+    "keep_aspect"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "output_tooltips": [
+   "All crops stacked into a single image batch."
+  ],
+  "output_matchtypes": null,
+  "name": "CropByBBoxes",
+  "display_name": "Crop By Bounding Boxes",
+  "description": "Crop and resize regions from the input image batch based on provided bounding boxes.",
+  "python_module": "comfy_extras.nodes_sdpose",
+  "category": "image/transform",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "crop",
+   "face crop",
+   "bbox crop",
+   "pose",
+   "bounding box"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "EmptyImage": {
+  "input": {
+   "required": {
+    "width": [
+     "INT",
+     {
+      "default": 512,
+      "min": 1,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "height": [
+     "INT",
+     {
+      "default": 512,
+      "min": 1,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "batch_size": [
+     "INT",
+     {
+      "default": 1,
+      "min": 1,
+      "max": 4096
+     }
+    ],
+    "color": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 16777215,
+      "step": 1,
+      "display": "color"
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "width",
+    "height",
+    "batch_size",
+    "color"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "name": "EmptyImage",
+  "display_name": "Empty Image",
+  "description": "",
+  "python_module": "nodes",
+  "category": "image",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "GrowMask": {
+  "input": {
+   "required": {
+    "mask": [
+     "MASK",
+     {}
+    ],
+    "expand": [
+     "INT",
+     {
+      "default": 0,
+      "min": -16384,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "tapered_corners": [
+     "BOOLEAN",
+     {
+      "advanced": true,
+      "default": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "mask",
+    "expand",
+    "tapered_corners"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MASK"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MASK"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "GrowMask",
+  "display_name": "Grow Mask",
+  "description": "",
+  "python_module": "comfy_extras.nodes_mask",
+  "category": "image/mask",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "expand mask",
+   "shrink mask"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "ImageCompositeMasked": {
+  "input": {
+   "required": {
+    "destination": [
+     "IMAGE",
+     {}
+    ],
+    "source": [
+     "IMAGE",
+     {}
+    ],
+    "x": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "y": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 16384,
+      "step": 1
+     }
+    ],
+    "resize_source": [
+     "BOOLEAN",
+     {
+      "default": false
+     }
+    ]
+   },
+   "optional": {
+    "mask": [
+     "MASK",
+     {}
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "destination",
+    "source",
+    "x",
+    "y",
+    "resize_source"
+   ],
+   "optional": [
+    "mask"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "ImageCompositeMasked",
+  "display_name": "Image Composite Masked",
+  "description": "",
+  "python_module": "comfy_extras.nodes_mask",
+  "category": "image/compositing",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "overlay",
+   "layer",
+   "paste image",
+   "images composition"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "ImageToMask": {
+  "input": {
+   "required": {
+    "image": [
+     "IMAGE",
+     {}
+    ],
+    "channel": [
+     "COMBO",
+     {
+      "multiselect": false,
+      "options": [
+       "red",
+       "green",
+       "blue",
+       "alpha"
+      ]
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "image",
+    "channel"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MASK"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MASK"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "ImageToMask",
+  "display_name": "Convert Image to Mask",
+  "description": "",
+  "python_module": "comfy_extras.nodes_mask",
+  "category": "image/mask",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "extract channel",
+   "channel to mask"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "KSampler": {
+  "input": {
+   "required": {
+    "model": [
+     "MODEL",
+     {
+      "tooltip": "The model used for denoising the input latent."
+     }
+    ],
+    "seed": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 18446744073709551615,
+      "control_after_generate": true,
+      "tooltip": "The random seed used for creating the noise."
+     }
+    ],
+    "steps": [
+     "INT",
+     {
+      "default": 20,
+      "min": 1,
+      "max": 10000,
+      "tooltip": "The number of steps used in the denoising process."
+     }
+    ],
+    "cfg": [
+     "FLOAT",
+     {
+      "default": 8.0,
+      "min": 0.0,
+      "max": 100.0,
+      "step": 0.1,
+      "round": 0.01,
+      "tooltip": "The Classifier-Free Guidance scale balances creativity and adherence to the prompt. Higher values result in images more closely matching the prompt however too high values will negatively impact quality."
+     }
+    ],
+    "sampler_name": [
+     [
+      "euler",
+      "euler_cfg_pp",
+      "euler_ancestral",
+      "euler_ancestral_cfg_pp",
+      "heun",
+      "heunpp2",
+      "exp_heun_2_x0",
+      "exp_heun_2_x0_sde",
+      "dpm_2",
+      "dpm_2_ancestral",
+      "lms",
+      "dpm_fast",
+      "dpm_adaptive",
+      "dpmpp_2s_ancestral",
+      "dpmpp_2s_ancestral_cfg_pp",
+      "dpmpp_sde",
+      "dpmpp_sde_gpu",
+      "dpmpp_2m",
+      "dpmpp_2m_cfg_pp",
+      "dpmpp_2m_sde",
+      "dpmpp_2m_sde_gpu",
+      "dpmpp_2m_sde_heun",
+      "dpmpp_2m_sde_heun_gpu",
+      "dpmpp_3m_sde",
+      "dpmpp_3m_sde_gpu",
+      "ddpm",
+      "lcm",
+      "ipndm",
+      "ipndm_v",
+      "deis",
+      "cfgpp_ud10_ab",
+      "res_multistep",
+      "res_multistep_cfg_pp",
+      "res_multistep_ancestral",
+      "res_multistep_ancestral_cfg_pp",
+      "gradient_estimation",
+      "gradient_estimation_cfg_pp",
+      "er_sde",
+      "seeds_2",
+      "seeds_3",
+      "sa_solver",
+      "sa_solver_pece",
+      "ddim",
+      "uni_pc",
+      "uni_pc_bh2"
+     ],
+     {
+      "tooltip": "The algorithm used when sampling, this can affect the quality, speed, and style of the generated output."
+     }
+    ],
+    "scheduler": [
+     [
+      "simple",
+      "sgm_uniform",
+      "karras",
+      "exponential",
+      "ddim_uniform",
+      "beta",
+      "normal",
+      "linear_quadratic",
+      "kl_optimal"
+     ],
+     {
+      "tooltip": "The scheduler controls how noise is gradually removed to form the image."
+     }
+    ],
+    "positive": [
+     "CONDITIONING",
+     {
+      "tooltip": "The conditioning describing the attributes you want to include in the image."
+     }
+    ],
+    "negative": [
+     "CONDITIONING",
+     {
+      "tooltip": "The conditioning describing the attributes you want to exclude from the image."
+     }
+    ],
+    "latent_image": [
+     "LATENT",
+     {
+      "tooltip": "The latent image to denoise."
+     }
+    ],
+    "denoise": [
+     "FLOAT",
+     {
+      "default": 1.0,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01,
+      "tooltip": "The amount of denoising applied, lower values will maintain the structure of the initial image allowing for image to image sampling."
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model",
+    "seed",
+    "steps",
+    "cfg",
+    "sampler_name",
+    "scheduler",
+    "positive",
+    "negative",
+    "latent_image",
+    "denoise"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "LATENT"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "LATENT"
+  ],
+  "name": "KSampler",
+  "display_name": "KSampler",
+  "description": "Uses the provided model, positive and negative conditioning to denoise the latent image.",
+  "python_module": "nodes",
+  "category": "model/sampling",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "output_tooltips": [
+   "The denoised latent."
+  ],
+  "search_aliases": [
+   "sampler",
+   "sample",
+   "generate",
+   "denoise",
+   "diffuse",
+   "txt2img",
+   "img2img"
+  ]
+ },
+ "KSamplerAdvanced": {
+  "input": {
+   "required": {
+    "model": [
+     "MODEL"
+    ],
+    "add_noise": [
+     [
+      "enable",
+      "disable"
+     ],
+     {
+      "advanced": true
+     }
+    ],
+    "noise_seed": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 18446744073709551615,
+      "control_after_generate": true
+     }
+    ],
+    "steps": [
+     "INT",
+     {
+      "default": 20,
+      "min": 1,
+      "max": 10000
+     }
+    ],
+    "cfg": [
+     "FLOAT",
+     {
+      "default": 8.0,
+      "min": 0.0,
+      "max": 100.0,
+      "step": 0.1,
+      "round": 0.01
+     }
+    ],
+    "sampler_name": [
+     [
+      "euler",
+      "euler_cfg_pp",
+      "euler_ancestral",
+      "euler_ancestral_cfg_pp",
+      "heun",
+      "heunpp2",
+      "exp_heun_2_x0",
+      "exp_heun_2_x0_sde",
+      "dpm_2",
+      "dpm_2_ancestral",
+      "lms",
+      "dpm_fast",
+      "dpm_adaptive",
+      "dpmpp_2s_ancestral",
+      "dpmpp_2s_ancestral_cfg_pp",
+      "dpmpp_sde",
+      "dpmpp_sde_gpu",
+      "dpmpp_2m",
+      "dpmpp_2m_cfg_pp",
+      "dpmpp_2m_sde",
+      "dpmpp_2m_sde_gpu",
+      "dpmpp_2m_sde_heun",
+      "dpmpp_2m_sde_heun_gpu",
+      "dpmpp_3m_sde",
+      "dpmpp_3m_sde_gpu",
+      "ddpm",
+      "lcm",
+      "ipndm",
+      "ipndm_v",
+      "deis",
+      "cfgpp_ud10_ab",
+      "res_multistep",
+      "res_multistep_cfg_pp",
+      "res_multistep_ancestral",
+      "res_multistep_ancestral_cfg_pp",
+      "gradient_estimation",
+      "gradient_estimation_cfg_pp",
+      "er_sde",
+      "seeds_2",
+      "seeds_3",
+      "sa_solver",
+      "sa_solver_pece",
+      "ddim",
+      "uni_pc",
+      "uni_pc_bh2"
+     ]
+    ],
+    "scheduler": [
+     [
+      "simple",
+      "sgm_uniform",
+      "karras",
+      "exponential",
+      "ddim_uniform",
+      "beta",
+      "normal",
+      "linear_quadratic",
+      "kl_optimal"
+     ]
+    ],
+    "positive": [
+     "CONDITIONING"
+    ],
+    "negative": [
+     "CONDITIONING"
+    ],
+    "latent_image": [
+     "LATENT"
+    ],
+    "start_at_step": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 10000,
+      "advanced": true
+     }
+    ],
+    "end_at_step": [
+     "INT",
+     {
+      "default": 10000,
+      "min": 0,
+      "max": 10000,
+      "advanced": true
+     }
+    ],
+    "return_with_leftover_noise": [
+     [
+      "disable",
+      "enable"
+     ],
+     {
+      "advanced": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model",
+    "add_noise",
+    "noise_seed",
+    "steps",
+    "cfg",
+    "sampler_name",
+    "scheduler",
+    "positive",
+    "negative",
+    "latent_image",
+    "start_at_step",
+    "end_at_step",
+    "return_with_leftover_noise"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "LATENT"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "LATENT"
+  ],
+  "name": "KSamplerAdvanced",
+  "display_name": "KSampler (Advanced)",
+  "description": "",
+  "python_module": "nodes",
+  "category": "model/sampling",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "MaskToImage": {
+  "input": {
+   "required": {
+    "mask": [
+     "MASK",
+     {}
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "mask"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "MaskToImage",
+  "display_name": "Convert Mask to Image",
+  "description": "",
+  "python_module": "comfy_extras.nodes_mask",
+  "category": "image/mask",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "convert mask"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "ModelSamplingSD3": {
+  "input": {
+   "required": {
+    "model": [
+     "MODEL"
+    ],
+    "shift": [
+     "FLOAT",
+     {
+      "default": 3.0,
+      "min": 0.0,
+      "max": 100.0,
+      "step": 0.01
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model",
+    "shift"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MODEL"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MODEL"
+  ],
+  "name": "ModelSamplingSD3",
+  "display_name": "ModelSamplingSD3",
+  "description": "",
+  "python_module": "comfy_extras.nodes_model_advanced",
+  "category": "model/patch/stable diffusion",
+  "output_node": false,
+  "has_intermediate_output": false,
+  "search_aliases": []
+ },
+ "RTDETR_detect": {
+  "input": {
+   "required": {
+    "model": [
+     "MODEL",
+     {
+      "display_name": "model"
+     }
+    ],
+    "image": [
+     "IMAGE",
+     {
+      "display_name": "image"
+     }
+    ],
+    "threshold": [
+     "FLOAT",
+     {
+      "display_name": "threshold",
+      "default": 0.5
+     }
+    ],
+    "class_name": [
+     "COMBO",
+     {
+      "tooltip": "Filter detections by class. Set to 'all' to disable filtering.",
+      "default": "all",
+      "multiselect": false,
+      "options": [
+       "all",
+       "person",
+       "bicycle",
+       "car",
+       "motorcycle",
+       "airplane",
+       "bus",
+       "train",
+       "truck",
+       "boat",
+       "traffic light",
+       "fire hydrant",
+       "stop sign",
+       "parking meter",
+       "bench",
+       "bird",
+       "cat",
+       "dog",
+       "horse",
+       "sheep",
+       "cow",
+       "elephant",
+       "bear",
+       "zebra",
+       "giraffe",
+       "backpack",
+       "umbrella",
+       "handbag",
+       "tie",
+       "suitcase",
+       "frisbee",
+       "skis",
+       "snowboard",
+       "sports ball",
+       "kite",
+       "baseball bat",
+       "baseball glove",
+       "skateboard",
+       "surfboard",
+       "tennis racket",
+       "bottle",
+       "wine glass",
+       "cup",
+       "fork",
+       "knife",
+       "spoon",
+       "bowl",
+       "banana",
+       "apple",
+       "sandwich",
+       "orange",
+       "broccoli",
+       "carrot",
+       "hot dog",
+       "pizza",
+       "donut",
+       "cake",
+       "chair",
+       "couch",
+       "potted plant",
+       "bed",
+       "dining table",
+       "toilet",
+       "tv",
+       "laptop",
+       "mouse",
+       "remote",
+       "keyboard",
+       "cell phone",
+       "microwave",
+       "oven",
+       "toaster",
+       "sink",
+       "refrigerator",
+       "book",
+       "clock",
+       "vase",
+       "scissors",
+       "teddy bear",
+       "hair drier",
+       "toothbrush"
+      ]
+     }
+    ],
+    "max_detections": [
+     "INT",
+     {
+      "display_name": "max_detections",
+      "tooltip": "Maximum number of detections to return per image. In order of descending confidence score.",
+      "default": 100
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model",
+    "image",
+    "threshold",
+    "class_name",
+    "max_detections"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "BOUNDING_BOX"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "bboxes"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "RTDETR_detect",
+  "display_name": "Run Real-Time Detection (RT-DETR)",
+  "description": "",
+  "python_module": "comfy_extras.nodes_rtdetr",
+  "category": "image/detection",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "bbox",
+   "bounding box",
+   "object detection",
+   "coco"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "SAM3_TrackToMask": {
+  "input": {
+   "required": {
+    "track_data": [
+     "SAM3_TRACK_DATA",
+     {
+      "display_name": "track_data"
+     }
+    ],
+    "object_indices": [
+     "STRING",
+     {
+      "display_name": "object_indices",
+      "tooltip": "Comma-separated object indices to include (e.g. '0,2,3'). Empty = all objects.",
+      "default": "",
+      "multiline": false
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "track_data",
+    "object_indices"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MASK"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "masks"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "SAM3_TrackToMask",
+  "display_name": "SAM3 Track to Mask",
+  "description": "",
+  "python_module": "comfy_extras.nodes_sam3",
+  "category": "image/detection",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "SAM3_VideoTrack": {
+  "input": {
+   "required": {
+    "images": [
+     "IMAGE",
+     {
+      "display_name": "images",
+      "tooltip": "Video frames as batched images"
+     }
+    ],
+    "model": [
+     "MODEL",
+     {
+      "display_name": "model"
+     }
+    ],
+    "detection_threshold": [
+     "FLOAT",
+     {
+      "display_name": "detection_threshold",
+      "tooltip": "Score threshold for text-prompted detection.",
+      "default": 0.5,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01
+     }
+    ],
+    "max_objects": [
+     "INT",
+     {
+      "display_name": "max_objects",
+      "tooltip": "Max tracked objects. Initial masks count toward this limit. 0 uses the internal cap of 64.",
+      "default": 4,
+      "min": 0,
+      "max": 64
+     }
+    ],
+    "detect_interval": [
+     "INT",
+     {
+      "display_name": "detect_interval",
+      "tooltip": "Run detection every N frames (1=every frame). Higher values save compute.",
+      "default": 1,
+      "min": 1
+     }
+    ]
+   },
+   "optional": {
+    "initial_mask": [
+     "MASK",
+     {
+      "display_name": "initial_mask",
+      "tooltip": "Mask(s) for the first frame to track (one per object)"
+     }
+    ],
+    "conditioning": [
+     "CONDITIONING",
+     {
+      "display_name": "conditioning",
+      "tooltip": "Text conditioning for detecting new objects during tracking"
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "images",
+    "model",
+    "detection_threshold",
+    "max_objects",
+    "detect_interval"
+   ],
+   "optional": [
+    "initial_mask",
+    "conditioning"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "SAM3_TRACK_DATA"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "track_data"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "SAM3_VideoTrack",
+  "display_name": "Run SAM3 Video Track",
+  "description": "",
+  "python_module": "comfy_extras.nodes_sam3",
+  "category": "image/detection",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "sam3",
+   "video",
+   "track",
+   "propagate"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "SDPoseDrawKeypoints": {
+  "input": {
+   "required": {
+    "keypoints": [
+     "POSE_KEYPOINT",
+     {}
+    ],
+    "draw_body": [
+     "BOOLEAN",
+     {
+      "default": true
+     }
+    ],
+    "draw_hands": [
+     "BOOLEAN",
+     {
+      "default": true
+     }
+    ],
+    "draw_face": [
+     "BOOLEAN",
+     {
+      "default": true
+     }
+    ],
+    "draw_feet": [
+     "BOOLEAN",
+     {
+      "default": false
+     }
+    ],
+    "stick_width": [
+     "INT",
+     {
+      "default": 4,
+      "min": 1,
+      "max": 10,
+      "step": 1
+     }
+    ],
+    "face_point_size": [
+     "INT",
+     {
+      "default": 3,
+      "min": 1,
+      "max": 10,
+      "step": 1
+     }
+    ],
+    "score_threshold": [
+     "FLOAT",
+     {
+      "default": 0.3,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01
+     }
+    ],
+    "draw_head": [
+     "BOOLEAN",
+     {
+      "default": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "keypoints",
+    "draw_body",
+    "draw_hands",
+    "draw_face",
+    "draw_feet",
+    "stick_width",
+    "face_point_size",
+    "score_threshold",
+    "draw_head"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "IMAGE"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "IMAGE"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "SDPoseDrawKeypoints",
+  "display_name": "SDPose Draw Keypoints",
+  "description": "",
+  "python_module": "comfy_extras.nodes_sdpose",
+  "category": "image/detection",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "openpose",
+   "pose detection",
+   "preprocessor",
+   "keypoints",
+   "pose"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "SDPoseFaceBBoxes": {
+  "input": {
+   "required": {
+    "keypoints": [
+     "POSE_KEYPOINT",
+     {}
+    ],
+    "scale": [
+     "FLOAT",
+     {
+      "tooltip": "Multiplier for the bounding box area around each detected face.",
+      "default": 1.5,
+      "min": 1.0,
+      "max": 10.0,
+      "step": 0.1
+     }
+    ],
+    "force_square": [
+     "BOOLEAN",
+     {
+      "tooltip": "Expand the shorter bbox axis so the crop region is always square.",
+      "default": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "keypoints",
+    "scale",
+    "force_square"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "BOUNDING_BOX"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "bboxes"
+  ],
+  "output_tooltips": [
+   "Face bounding boxes per frame, compatible with SDPoseKeypointExtractor bboxes input."
+  ],
+  "output_matchtypes": null,
+  "name": "SDPoseFaceBBoxes",
+  "display_name": "SDPose Face Bounding Boxes",
+  "description": "",
+  "python_module": "comfy_extras.nodes_sdpose",
+  "category": "image/detection",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "face bbox",
+   "face bounding box",
+   "pose",
+   "keypoints"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "SDPoseKeypointExtractor": {
+  "input": {
+   "required": {
+    "model": [
+     "MODEL",
+     {}
+    ],
+    "vae": [
+     "VAE",
+     {}
+    ],
+    "image": [
+     "IMAGE",
+     {}
+    ],
+    "batch_size": [
+     "INT",
+     {
+      "default": 16,
+      "min": 1,
+      "max": 10000,
+      "step": 1
+     }
+    ]
+   },
+   "optional": {
+    "bboxes": [
+     "BOUNDING_BOX",
+     {
+      "tooltip": "Optional bounding boxes for more accurate detections. Required for multi-person detection.",
+      "default": {
+       "x": 0,
+       "y": 0,
+       "width": 512,
+       "height": 512
+      },
+      "socketless": true,
+      "forceInput": true
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "model",
+    "vae",
+    "image",
+    "batch_size"
+   ],
+   "optional": [
+    "bboxes"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "POSE_KEYPOINT"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "keypoints"
+  ],
+  "output_tooltips": [
+   "Keypoints in OpenPose frame format (canvas_width, canvas_height, people)"
+  ],
+  "output_matchtypes": null,
+  "name": "SDPoseKeypointExtractor",
+  "display_name": "SDPose Keypoint Extractor",
+  "description": "Extract pose keypoints from images using the SDPose model: https://huggingface.co/Comfy-Org/SDPose/tree/main/checkpoints",
+  "python_module": "comfy_extras.nodes_sdpose",
+  "category": "image/detection",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "openpose",
+   "pose detection",
+   "preprocessor",
+   "keypoints",
+   "sdpose"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "ThresholdMask": {
+  "input": {
+   "required": {
+    "mask": [
+     "MASK",
+     {}
+    ],
+    "value": [
+     "FLOAT",
+     {
+      "default": 0.5,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.01
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "mask",
+    "value"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "MASK"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "MASK"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "ThresholdMask",
+  "display_name": "Threshold Mask",
+  "description": "",
+  "python_module": "comfy_extras.nodes_mask",
+  "category": "image/mask",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": [
+   "binary mask"
+  ],
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "TrimVideoLatent": {
+  "input": {
+   "required": {
+    "samples": [
+     "LATENT",
+     {}
+    ],
+    "trim_amount": [
+     "INT",
+     {
+      "default": 0,
+      "min": 0,
+      "max": 99999
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "samples",
+    "trim_amount"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "LATENT"
+  ],
+  "output_is_list": [
+   false
+  ],
+  "output_name": [
+   "LATENT"
+  ],
+  "output_tooltips": [
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "TrimVideoLatent",
+  "display_name": "Trim Video Latent",
+  "description": "",
+  "python_module": "comfy_extras.nodes_wan",
+  "category": "model/latent",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "WanAnimateToVideo": {
+  "input": {
+   "required": {
+    "positive": [
+     "CONDITIONING",
+     {}
+    ],
+    "negative": [
+     "CONDITIONING",
+     {}
+    ],
+    "vae": [
+     "VAE",
+     {}
+    ],
+    "width": [
+     "INT",
+     {
+      "default": 832,
+      "min": 16,
+      "max": 16384,
+      "step": 16
+     }
+    ],
+    "height": [
+     "INT",
+     {
+      "default": 480,
+      "min": 16,
+      "max": 16384,
+      "step": 16
+     }
+    ],
+    "length": [
+     "INT",
+     {
+      "default": 77,
+      "min": 1,
+      "max": 16384,
+      "step": 4
+     }
+    ],
+    "batch_size": [
+     "INT",
+     {
+      "default": 1,
+      "min": 1,
+      "max": 4096
+     }
+    ],
+    "continue_motion_max_frames": [
+     "INT",
+     {
+      "default": 5,
+      "min": 1,
+      "max": 16384,
+      "step": 4
+     }
+    ],
+    "video_frame_offset": [
+     "INT",
+     {
+      "tooltip": "The amount of frames to seek in all the input videos. Used for generating longer videos by chunk. Connect to the video_frame_offset output of the previous node for extending a video.",
+      "default": 0,
+      "min": 0,
+      "max": 16384,
+      "step": 1
+     }
+    ]
+   },
+   "optional": {
+    "clip_vision_output": [
+     "CLIP_VISION_OUTPUT",
+     {}
+    ],
+    "reference_image": [
+     "IMAGE",
+     {}
+    ],
+    "face_video": [
+     "IMAGE",
+     {}
+    ],
+    "pose_video": [
+     "IMAGE",
+     {}
+    ],
+    "background_video": [
+     "IMAGE",
+     {}
+    ],
+    "character_mask": [
+     "MASK",
+     {}
+    ],
+    "continue_motion": [
+     "IMAGE",
+     {}
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "positive",
+    "negative",
+    "vae",
+    "width",
+    "height",
+    "length",
+    "batch_size",
+    "continue_motion_max_frames",
+    "video_frame_offset"
+   ],
+   "optional": [
+    "clip_vision_output",
+    "reference_image",
+    "face_video",
+    "pose_video",
+    "background_video",
+    "character_mask",
+    "continue_motion"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "CONDITIONING",
+   "CONDITIONING",
+   "LATENT",
+   "INT",
+   "INT",
+   "INT"
+  ],
+  "output_is_list": [
+   false,
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "output_name": [
+   "positive",
+   "negative",
+   "latent",
+   "trim_latent",
+   "trim_image",
+   "video_frame_offset"
+  ],
+  "output_tooltips": [
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "WanAnimateToVideo",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_wan",
+  "category": "model/conditioning/wan/animate",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": true,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ },
+ "WanImageToVideo": {
+  "input": {
+   "required": {
+    "positive": [
+     "CONDITIONING",
+     {}
+    ],
+    "negative": [
+     "CONDITIONING",
+     {}
+    ],
+    "vae": [
+     "VAE",
+     {}
+    ],
+    "width": [
+     "INT",
+     {
+      "default": 832,
+      "min": 16,
+      "max": 16384,
+      "step": 16
+     }
+    ],
+    "height": [
+     "INT",
+     {
+      "default": 480,
+      "min": 16,
+      "max": 16384,
+      "step": 16
+     }
+    ],
+    "length": [
+     "INT",
+     {
+      "default": 81,
+      "min": 1,
+      "max": 16384,
+      "step": 4
+     }
+    ],
+    "batch_size": [
+     "INT",
+     {
+      "default": 1,
+      "min": 1,
+      "max": 4096
+     }
+    ]
+   },
+   "optional": {
+    "clip_vision_output": [
+     "CLIP_VISION_OUTPUT",
+     {}
+    ],
+    "start_image": [
+     "IMAGE",
+     {}
+    ],
+    "ref_pad_image": [
+     "IMAGE",
+     {
+      "tooltip": "Fills the padding frames of the image conditioning with this image instead of gray, anchoring identity without pinning frames (SVI-style anti-drift padding, used by models such as ID-V2V)."
+     }
+    ]
+   }
+  },
+  "input_order": {
+   "required": [
+    "positive",
+    "negative",
+    "vae",
+    "width",
+    "height",
+    "length",
+    "batch_size"
+   ],
+   "optional": [
+    "clip_vision_output",
+    "start_image",
+    "ref_pad_image"
+   ]
+  },
+  "is_input_list": false,
+  "output": [
+   "CONDITIONING",
+   "CONDITIONING",
+   "LATENT"
+  ],
+  "output_is_list": [
+   false,
+   false,
+   false
+  ],
+  "output_name": [
+   "positive",
+   "negative",
+   "latent"
+  ],
+  "output_tooltips": [
+   null,
+   null,
+   null
+  ],
+  "output_matchtypes": null,
+  "name": "WanImageToVideo",
+  "display_name": null,
+  "description": "",
+  "python_module": "comfy_extras.nodes_wan",
+  "category": "model/conditioning/wan",
+  "output_node": false,
+  "deprecated": false,
+  "experimental": false,
+  "dev_only": false,
+  "api_node": false,
+  "price_badge": null,
+  "search_aliases": null,
+  "essentials_category": null,
+  "has_intermediate_output": false
+ }
+}

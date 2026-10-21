@@ -1,0 +1,168 @@
+{
+ "1": {
+  "class_type": "UnetLoaderGGUF",
+  "inputs": {
+   "unet_name": "Wan2.2-TI2V-5B-Q8_0.gguf"
+  },
+  "_meta": {
+   "title": "Wan2.2 TI2V 5B (GGUF)"
+  }
+ },
+ "2": {
+  "class_type": "ModelSamplingSD3",
+  "inputs": {
+   "model": [
+    "1",
+    0
+   ],
+   "shift": 8.0
+  }
+ },
+ "3": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+   "type": "wan",
+   "device": "cpu"
+  },
+  "_meta": {
+   "title": "Load umt5 (fp8) on CPU"
+  }
+ },
+ "4": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "wan2.2_vae.safetensors"
+  },
+  "_meta": {
+   "title": "Load Wan 2.2 VAE (5B)"
+  }
+ },
+ "5": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "The person keeps their head perfectly still while their eyes slowly slide to the side in a suspicious side-eye, one eyebrow lifts, lips press together. Their hands stay down out of frame the whole time and nobody else enters the frame. static locked-off camera. Smooth natural motion, consistent face and identity.",
+   "clip": [
+    "3",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Meme motion prompt"
+  }
+ },
+ "6": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走",
+   "clip": [
+    "3",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Negative prompt"
+  }
+ },
+ "7": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "avatar.png"
+  },
+  "_meta": {
+   "title": "You, in the meme scene"
+  }
+ },
+ "8": {
+  "class_type": "Wan22ImageToVideoLatent",
+  "inputs": {
+   "vae": [
+    "4",
+    0
+   ],
+   "width": 480,
+   "height": 832,
+   "length": 73,
+   "batch_size": 1,
+   "start_image": [
+    "7",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Size / length"
+  }
+ },
+ "9": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "2",
+    0
+   ],
+   "seed": 2026,
+   "steps": 20,
+   "cfg": 5.0,
+   "sampler_name": "uni_pc",
+   "scheduler": "simple",
+   "positive": [
+    "5",
+    0
+   ],
+   "negative": [
+    "6",
+    0
+   ],
+   "latent_image": [
+    "8",
+    0
+   ],
+   "denoise": 1.0
+  }
+ },
+ "10": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "9",
+    0
+   ],
+   "vae": [
+    "4",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "11": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "10",
+    0
+   ],
+   "fps": 24.0
+  }
+ },
+ "12": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "11",
+    0
+   ],
+   "filename_prefix": "mc/meme_motion_lite",
+   "format": "mp4",
+   "format.codec": "h264"
+  },
+  "_meta": {
+   "title": "Save meme clip"
+  }
+ }
+}

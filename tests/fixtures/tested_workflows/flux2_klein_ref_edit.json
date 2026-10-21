@@ -1,0 +1,391 @@
+{
+ "1": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "flux-2-klein-4b.safetensors",
+   "weight_dtype": "default"
+  },
+  "_meta": {
+   "title": "Load Klein 4B (distilled)"
+  }
+ },
+ "2": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "qwen_3_4b.safetensors",
+   "type": "flux2",
+   "device": "default"
+  },
+  "_meta": {
+   "title": "Load Qwen3 4B"
+  }
+ },
+ "3": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "flux2-vae.safetensors"
+  },
+  "_meta": {
+   "title": "Load Flux2 VAE"
+  }
+ },
+ "4": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "Place the coffee mug from image 1 on a sunny cafe table outdoors, keep the mug's exact shape and color, use the lighting style of image 2, vertical photo",
+   "clip": [
+    "2",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Prompt"
+  }
+ },
+ "5": {
+  "class_type": "ConditioningZeroOut",
+  "inputs": {
+   "conditioning": [
+    "4",
+    0
+   ]
+  }
+ },
+ "6": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "ref1.png"
+  },
+  "_meta": {
+   "title": "Reference image 1"
+  }
+ },
+ "7": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "6",
+    0
+   ],
+   "upscale_method": "nearest-exact",
+   "megapixels": 1.0,
+   "resolution_steps": 1
+  }
+ },
+ "8": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "7",
+    0
+   ],
+   "vae": [
+    "3",
+    0
+   ]
+  }
+ },
+ "9": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "4",
+    0
+   ],
+   "latent": [
+    "8",
+    0
+   ]
+  }
+ },
+ "10": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "5",
+    0
+   ],
+   "latent": [
+    "8",
+    0
+   ]
+  }
+ },
+ "11": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "ref2.png"
+  },
+  "_meta": {
+   "title": "Reference image 2"
+  }
+ },
+ "12": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "11",
+    0
+   ],
+   "upscale_method": "nearest-exact",
+   "megapixels": 1.0,
+   "resolution_steps": 1
+  }
+ },
+ "13": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "12",
+    0
+   ],
+   "vae": [
+    "3",
+    0
+   ]
+  }
+ },
+ "14": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "9",
+    0
+   ],
+   "latent": [
+    "13",
+    0
+   ]
+  }
+ },
+ "15": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "10",
+    0
+   ],
+   "latent": [
+    "13",
+    0
+   ]
+  }
+ },
+ "16": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "ref3.png"
+  },
+  "_meta": {
+   "title": "Reference image 3"
+  }
+ },
+ "17": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "16",
+    0
+   ],
+   "upscale_method": "nearest-exact",
+   "megapixels": 1.0,
+   "resolution_steps": 1
+  }
+ },
+ "18": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "17",
+    0
+   ],
+   "vae": [
+    "3",
+    0
+   ]
+  }
+ },
+ "19": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "14",
+    0
+   ],
+   "latent": [
+    "18",
+    0
+   ]
+  }
+ },
+ "20": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "15",
+    0
+   ],
+   "latent": [
+    "18",
+    0
+   ]
+  }
+ },
+ "21": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "ref4.png"
+  },
+  "_meta": {
+   "title": "Reference image 4"
+  }
+ },
+ "22": {
+  "class_type": "ImageScaleToTotalPixels",
+  "inputs": {
+   "image": [
+    "21",
+    0
+   ],
+   "upscale_method": "nearest-exact",
+   "megapixels": 1.0,
+   "resolution_steps": 1
+  }
+ },
+ "23": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "22",
+    0
+   ],
+   "vae": [
+    "3",
+    0
+   ]
+  }
+ },
+ "24": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "19",
+    0
+   ],
+   "latent": [
+    "23",
+    0
+   ]
+  }
+ },
+ "25": {
+  "class_type": "ReferenceLatent",
+  "inputs": {
+   "conditioning": [
+    "20",
+    0
+   ],
+   "latent": [
+    "23",
+    0
+   ]
+  }
+ },
+ "26": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "model": [
+    "1",
+    0
+   ],
+   "positive": [
+    "24",
+    0
+   ],
+   "negative": [
+    "25",
+    0
+   ],
+   "cfg": 1.0
+  }
+ },
+ "27": {
+  "class_type": "RandomNoise",
+  "inputs": {
+   "noise_seed": 7
+  }
+ },
+ "28": {
+  "class_type": "KSamplerSelect",
+  "inputs": {
+   "sampler_name": "euler"
+  }
+ },
+ "29": {
+  "class_type": "Flux2Scheduler",
+  "inputs": {
+   "steps": 4,
+   "width": 1088,
+   "height": 1920
+  }
+ },
+ "30": {
+  "class_type": "EmptyFlux2LatentImage",
+  "inputs": {
+   "width": 1088,
+   "height": 1920,
+   "batch_size": 1
+  },
+  "_meta": {
+   "title": "Size (9:16)"
+  }
+ },
+ "31": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "27",
+    0
+   ],
+   "guider": [
+    "26",
+    0
+   ],
+   "sampler": [
+    "28",
+    0
+   ],
+   "sigmas": [
+    "29",
+    0
+   ],
+   "latent_image": [
+    "30",
+    0
+   ]
+  }
+ },
+ "32": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "31",
+    0
+   ],
+   "vae": [
+    "3",
+    0
+   ]
+  }
+ },
+ "33": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "32",
+    0
+   ],
+   "filename_prefix": "flux2/klein_ref_edit"
+  }
+ }
+}

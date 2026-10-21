@@ -1,0 +1,23 @@
+{
+ "$comment": "Example community format. Copy into main_character_comfy/formats/community/ (or point $MC_FORMATS at it) and restart. Original recipes only: no real people, no copyrighted characters or footage.",
+ "version": 1,
+ "formats": [
+  {
+   "key": "plant_parent",
+   "label": "Proud Plant Parent",
+   "emoji": "🪴",
+   "vibe": "wholesome",
+   "scene": "Put the person from image 1 in a sunny living room full of houseplants, holding a tiny potted sprout up to the camera with both hands, beaming with pride, medium close-up.",
+   "motion": "The person proudly lifts the tiny sprout toward the camera, nods, and gives it a gentle look of pure joy.",
+   "camera": "static camera, slight push-in",
+   "line": "",
+   "effect": "none",
+   "effect_at": 0.0,
+   "frames": 81,
+   "captions": [
+    {"top": "me after keeping one plant", "bottom": "alive for a week"},
+    {"top": "my new leaf", "bottom": "is basically my child"}
+   ]
+  }
+ ]
+}

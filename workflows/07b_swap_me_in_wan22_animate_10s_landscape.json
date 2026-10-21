@@ -1,0 +1,859 @@
+{
+ "1": {
+  "class_type": "LoadVideo",
+  "inputs": {
+   "file": "clip.mp4"
+  },
+  "_meta": {
+   "title": "Your clip (you must have the rights)"
+  }
+ },
+ "2": {
+  "class_type": "GetVideoComponents",
+  "inputs": {
+   "video": [
+    "1",
+    0
+   ]
+  }
+ },
+ "3": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "avatar.png"
+  },
+  "_meta": {
+   "title": "You (reference photo / avatar)"
+  }
+ },
+ "4": {
+  "class_type": "ImageScale",
+  "inputs": {
+   "image": [
+    "3",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "width": 832,
+   "height": 480,
+   "crop": "center"
+  }
+ },
+ "5": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "sam3.1_multiplex_fp16.safetensors"
+  },
+  "_meta": {
+   "title": "Load SAM 3.1"
+  }
+ },
+ "6": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "person",
+   "clip": [
+    "5",
+    1
+   ]
+  },
+  "_meta": {
+   "title": "Who to replace"
+  }
+ },
+ "7": {
+  "class_type": "SAM3_VideoTrack",
+  "inputs": {
+   "images": [
+    "2",
+    0
+   ],
+   "model": [
+    "5",
+    0
+   ],
+   "detection_threshold": 0.5,
+   "max_objects": 1,
+   "detect_interval": 1,
+   "conditioning": [
+    "6",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Track the person"
+  }
+ },
+ "8": {
+  "class_type": "SAM3_TrackToMask",
+  "inputs": {
+   "track_data": [
+    "7",
+    0
+   ],
+   "object_indices": "0"
+  }
+ },
+ "9": {
+  "class_type": "GrowMask",
+  "inputs": {
+   "mask": [
+    "8",
+    0
+   ],
+   "expand": 12,
+   "tapered_corners": true
+  }
+ },
+ "10": {
+  "class_type": "MaskToImage",
+  "inputs": {
+   "mask": [
+    "9",
+    0
+   ]
+  }
+ },
+ "11": {
+  "class_type": "ImageScale",
+  "inputs": {
+   "image": [
+    "10",
+    0
+   ],
+   "upscale_method": "area",
+   "width": 52,
+   "height": 30,
+   "crop": "disabled"
+  }
+ },
+ "12": {
+  "class_type": "ImageScale",
+  "inputs": {
+   "image": [
+    "11",
+    0
+   ],
+   "upscale_method": "nearest-exact",
+   "width": 832,
+   "height": 480,
+   "crop": "disabled"
+  }
+ },
+ "13": {
+  "class_type": "ImageToMask",
+  "inputs": {
+   "image": [
+    "12",
+    0
+   ],
+   "channel": "red"
+  }
+ },
+ "14": {
+  "class_type": "ThresholdMask",
+  "inputs": {
+   "mask": [
+    "13",
+    0
+   ],
+   "value": 0.01
+  },
+  "_meta": {
+   "title": "Character mask"
+  }
+ },
+ "15": {
+  "class_type": "EmptyImage",
+  "inputs": {
+   "width": 832,
+   "height": 480,
+   "batch_size": 160,
+   "color": 0
+  }
+ },
+ "16": {
+  "class_type": "ImageCompositeMasked",
+  "inputs": {
+   "destination": [
+    "2",
+    0
+   ],
+   "source": [
+    "15",
+    0
+   ],
+   "x": 0,
+   "y": 0,
+   "resize_source": false,
+   "mask": [
+    "14",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Background with the person cut out"
+  }
+ },
+ "17": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "rt_detr_v4-x-hgnet_fp16.safetensors",
+   "weight_dtype": "default"
+  },
+  "_meta": {
+   "title": "Load RT-DETR v4"
+  }
+ },
+ "18": {
+  "class_type": "RTDETR_detect",
+  "inputs": {
+   "image": [
+    "2",
+    0
+   ],
+   "model": [
+    "17",
+    0
+   ],
+   "threshold": 0.5,
+   "class_name": "person",
+   "max_detections": 1
+  }
+ },
+ "19": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "sdpose_wholebody_fp16.safetensors"
+  },
+  "_meta": {
+   "title": "Load SDPose wholebody"
+  }
+ },
+ "20": {
+  "class_type": "SDPoseKeypointExtractor",
+  "inputs": {
+   "model": [
+    "19",
+    0
+   ],
+   "vae": [
+    "19",
+    2
+   ],
+   "image": [
+    "2",
+    0
+   ],
+   "batch_size": 16,
+   "bboxes": [
+    "18",
+    0
+   ]
+  }
+ },
+ "21": {
+  "class_type": "SDPoseDrawKeypoints",
+  "inputs": {
+   "keypoints": [
+    "20",
+    0
+   ],
+   "draw_body": true,
+   "draw_hands": true,
+   "draw_face": false,
+   "draw_feet": false,
+   "stick_width": 4,
+   "face_point_size": 3,
+   "score_threshold": 0.3,
+   "draw_head": true
+  },
+  "_meta": {
+   "title": "Pose video"
+  }
+ },
+ "22": {
+  "class_type": "SDPoseFaceBBoxes",
+  "inputs": {
+   "keypoints": [
+    "20",
+    0
+   ],
+   "scale": 1.5,
+   "force_square": true
+  }
+ },
+ "23": {
+  "class_type": "CropByBBoxes",
+  "inputs": {
+   "image": [
+    "2",
+    0
+   ],
+   "bboxes": [
+    "22",
+    0
+   ],
+   "output_width": 512,
+   "output_height": 512,
+   "padding": 0,
+   "keep_aspect": "stretch"
+  },
+  "_meta": {
+   "title": "Face video (512)"
+  }
+ },
+ "24": {
+  "class_type": "UnetLoaderGGUF",
+  "inputs": {
+   "unet_name": "Wan2.2-Animate-14B-Q4_K_M.gguf"
+  },
+  "_meta": {
+   "title": "Wan2.2 Animate 14B (GGUF)"
+  }
+ },
+ "25": {
+  "class_type": "LoraLoaderModelOnly",
+  "inputs": {
+   "model": [
+    "24",
+    0
+   ],
+   "lora_name": "lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors",
+   "strength_model": 1.0
+  },
+  "_meta": {
+   "title": "LightX2V step-distill LoRA"
+  }
+ },
+ "26": {
+  "class_type": "LoraLoaderModelOnly",
+  "inputs": {
+   "model": [
+    "25",
+    0
+   ],
+   "lora_name": "WanAnimate_relight_lora_fp16.safetensors",
+   "strength_model": 1.0
+  },
+  "_meta": {
+   "title": "Wan-Animate relight LoRA (match scene lighting)"
+  }
+ },
+ "27": {
+  "class_type": "ModelSamplingSD3",
+  "inputs": {
+   "model": [
+    "26",
+    0
+   ],
+   "shift": 8.0
+  }
+ },
+ "28": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+   "type": "wan",
+   "device": "default"
+  },
+  "_meta": {
+   "title": "Load umt5 (fp8)"
+  }
+ },
+ "29": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "wan_2.1_vae.safetensors"
+  },
+  "_meta": {
+   "title": "Load Wan 2.1 VAE"
+  }
+ },
+ "30": {
+  "class_type": "CLIPVisionLoader",
+  "inputs": {
+   "clip_name": "clip_vision_h.safetensors"
+  },
+  "_meta": {
+   "title": "Load CLIP Vision H"
+  }
+ },
+ "31": {
+  "class_type": "CLIPVisionEncode",
+  "inputs": {
+   "clip_vision": [
+    "30",
+    0
+   ],
+   "image": [
+    "4",
+    0
+   ],
+   "crop": "none"
+  }
+ },
+ "32": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "The person moves naturally, matching the original performance.",
+   "clip": [
+    "28",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Prompt"
+  }
+ },
+ "33": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "text": "色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走",
+   "clip": [
+    "28",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Negative prompt"
+  }
+ },
+ "34": {
+  "class_type": "WanAnimateToVideo",
+  "inputs": {
+   "positive": [
+    "32",
+    0
+   ],
+   "negative": [
+    "33",
+    0
+   ],
+   "vae": [
+    "29",
+    0
+   ],
+   "width": 832,
+   "height": 480,
+   "length": 77,
+   "batch_size": 1,
+   "continue_motion_max_frames": 5,
+   "video_frame_offset": 0,
+   "clip_vision_output": [
+    "31",
+    0
+   ],
+   "reference_image": [
+    "4",
+    0
+   ],
+   "pose_video": [
+    "21",
+    0
+   ],
+   "face_video": [
+    "23",
+    0
+   ],
+   "background_video": [
+    "16",
+    0
+   ],
+   "character_mask": [
+    "14",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Animate window 1"
+  }
+ },
+ "35": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "27",
+    0
+   ],
+   "seed": 2026,
+   "steps": 6,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "positive": [
+    "34",
+    0
+   ],
+   "negative": [
+    "34",
+    1
+   ],
+   "latent_image": [
+    "34",
+    2
+   ],
+   "denoise": 1.0
+  }
+ },
+ "36": {
+  "class_type": "TrimVideoLatent",
+  "inputs": {
+   "samples": [
+    "35",
+    0
+   ],
+   "trim_amount": [
+    "34",
+    3
+   ]
+  }
+ },
+ "37": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "36",
+    0
+   ],
+   "vae": [
+    "29",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "38": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "37",
+    0
+   ],
+   "batch_index": [
+    "34",
+    4
+   ],
+   "length": 4096
+  }
+ },
+ "39": {
+  "class_type": "WanAnimateToVideo",
+  "inputs": {
+   "positive": [
+    "32",
+    0
+   ],
+   "negative": [
+    "33",
+    0
+   ],
+   "vae": [
+    "29",
+    0
+   ],
+   "width": 832,
+   "height": 480,
+   "length": 77,
+   "batch_size": 1,
+   "continue_motion_max_frames": 5,
+   "video_frame_offset": [
+    "34",
+    5
+   ],
+   "clip_vision_output": [
+    "31",
+    0
+   ],
+   "reference_image": [
+    "4",
+    0
+   ],
+   "pose_video": [
+    "21",
+    0
+   ],
+   "face_video": [
+    "23",
+    0
+   ],
+   "background_video": [
+    "16",
+    0
+   ],
+   "character_mask": [
+    "14",
+    0
+   ],
+   "continue_motion": [
+    "38",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Animate window 2 (extend)"
+  }
+ },
+ "40": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "27",
+    0
+   ],
+   "seed": 2027,
+   "steps": 6,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "positive": [
+    "39",
+    0
+   ],
+   "negative": [
+    "39",
+    1
+   ],
+   "latent_image": [
+    "39",
+    2
+   ],
+   "denoise": 1.0
+  }
+ },
+ "41": {
+  "class_type": "TrimVideoLatent",
+  "inputs": {
+   "samples": [
+    "40",
+    0
+   ],
+   "trim_amount": [
+    "39",
+    3
+   ]
+  }
+ },
+ "42": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "41",
+    0
+   ],
+   "vae": [
+    "29",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "43": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "42",
+    0
+   ],
+   "batch_index": [
+    "39",
+    4
+   ],
+   "length": 4096
+  }
+ },
+ "44": {
+  "class_type": "ImageBatch",
+  "inputs": {
+   "image1": [
+    "38",
+    0
+   ],
+   "image2": [
+    "43",
+    0
+   ]
+  }
+ },
+ "45": {
+  "class_type": "WanAnimateToVideo",
+  "inputs": {
+   "positive": [
+    "32",
+    0
+   ],
+   "negative": [
+    "33",
+    0
+   ],
+   "vae": [
+    "29",
+    0
+   ],
+   "width": 832,
+   "height": 480,
+   "length": 77,
+   "batch_size": 1,
+   "continue_motion_max_frames": 5,
+   "video_frame_offset": [
+    "39",
+    5
+   ],
+   "clip_vision_output": [
+    "31",
+    0
+   ],
+   "reference_image": [
+    "4",
+    0
+   ],
+   "pose_video": [
+    "21",
+    0
+   ],
+   "face_video": [
+    "23",
+    0
+   ],
+   "background_video": [
+    "16",
+    0
+   ],
+   "character_mask": [
+    "14",
+    0
+   ],
+   "continue_motion": [
+    "44",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "Animate window 3 (extend)"
+  }
+ },
+ "46": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "27",
+    0
+   ],
+   "seed": 2028,
+   "steps": 6,
+   "cfg": 1.0,
+   "sampler_name": "euler",
+   "scheduler": "simple",
+   "positive": [
+    "45",
+    0
+   ],
+   "negative": [
+    "45",
+    1
+   ],
+   "latent_image": [
+    "45",
+    2
+   ],
+   "denoise": 1.0
+  }
+ },
+ "47": {
+  "class_type": "TrimVideoLatent",
+  "inputs": {
+   "samples": [
+    "46",
+    0
+   ],
+   "trim_amount": [
+    "45",
+    3
+   ]
+  }
+ },
+ "48": {
+  "class_type": "VAEDecodeTiled",
+  "inputs": {
+   "samples": [
+    "47",
+    0
+   ],
+   "vae": [
+    "29",
+    0
+   ],
+   "tile_size": 256,
+   "overlap": 32,
+   "temporal_size": 32,
+   "temporal_overlap": 4
+  },
+  "_meta": {
+   "title": "Tiled decode (low VRAM)"
+  }
+ },
+ "49": {
+  "class_type": "ImageFromBatch",
+  "inputs": {
+   "image": [
+    "48",
+    0
+   ],
+   "batch_index": [
+    "45",
+    4
+   ],
+   "length": 4096
+  }
+ },
+ "50": {
+  "class_type": "ImageBatch",
+  "inputs": {
+   "image1": [
+    "44",
+    0
+   ],
+   "image2": [
+    "49",
+    0
+   ]
+  }
+ },
+ "51": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "images": [
+    "50",
+    0
+   ],
+   "fps": 16.0
+  }
+ },
+ "52": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "video": [
+    "51",
+    0
+   ],
+   "filename_prefix": "mc/swap",
+   "format": "mp4",
+   "format.codec": "h264"
+  },
+  "_meta": {
+   "title": "Save swapped clip"
+  }
+ }
+}

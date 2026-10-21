@@ -1,0 +1,3 @@
+-r requirements.txt
+pytest>=8
+aiohttp>=3.9   # fake ComfyUI server for integration tests

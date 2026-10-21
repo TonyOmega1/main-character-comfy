@@ -1,0 +1,27 @@
+/* Layout-only rules shared by every theme. No colors or fonts here. */
+/* header: logo left, status + dark/light toggle right */
+.mc-header {display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;}
+.mc-header-right {display: flex; align-items: center; gap: 18px; flex-wrap: wrap;}
+.mc-hero {padding: 28px 0 8px;}
+.mc-hero .mc-rule {margin: 14px 0 18px;}
+.mc-hero h1 {margin: 0 0 14px 0;}
+.mc-footline {display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 28px;}
+.mc-format-grid label {cursor: pointer;}
+.mc-step-title {margin: 0 0 4px 0;}
+.mc-stages {display: flex; flex-direction: column; gap: 6px;}
+.mc-stage {display: grid; grid-template-columns: 26px 1fr 52px; align-items: center; gap: 8px; padding: 6px 10px;}
+.mc-bar {height: 6px; overflow: hidden; margin-top: 3px;}
+.mc-bar > div {height: 100%;}
+/* The format picker is a radio rendered as a card grid. */
+.mc-format-grid .wrap {display: grid !important; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px;}
+.mc-format-grid label {min-height: 64px; display: flex; align-items: center; justify-content: center; text-align: center;}
+.mc-primary button, button.mc-primary {width: 100%; min-height: 56px;}
+.mc-toast:empty {display: none;}
+.mc-share {display: flex; flex-wrap: wrap; gap: 8px;}
+.mc-share-btn {display: inline-flex; align-items: center; gap: 4px; padding: 8px 12px; text-decoration: none; cursor: pointer;}
+.mc-share-msg {flex-basis: 100%; font-size: 0.85rem;}
+.mc-privacy p {margin: 0;}
+/* hardware tier row (layout only; the look lives in the theme file) */
+.mc-tier {align-items: center; gap: 12px;}
+.mc-tier-info p {margin: 0; font-size: 0.92em;}
+.mc-tier-toggle .wrap {flex-wrap: wrap; gap: 6px;}

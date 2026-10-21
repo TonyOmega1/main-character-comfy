@@ -1,0 +1,438 @@
+{
+ "$comment": "MC format library. Community-editable: add a recipe here or drop a JSON file with the same shape in formats/community/. Rules: original recipes only (pose, camera move, caption layout); no real people, no copyrighted characters/footage, no named meme sources. The first caption pair is the default. 'scene' must mention 'image 1' (the user's photo). Fields: key, label, emoji, vibe (reaction|chaos|smug|panic|wholesome), scene, motion, camera, captions[{top,bottom}], line (optional spoken line), effect (none|punch_in|shake|boomerang), effect_at (s), frames (4n+1, 81 = ~5 s), fresh (optional bool: show in 'Fresh this week'), negative (optional extra Wan negative terms), caption_layout (optional: classic|edges|top).",
+ "version": 1,
+ "formats": [
+  {
+   "key": "long_stare",
+   "label": "The Long Stare",
+   "emoji": "😐",
+   "scene": "Put the person from image 1 at an office desk, upper-body medium close-up, looking straight into the lens with a completely flat, unimpressed expression, eyebrows slightly raised, harsh office lighting.",
+   "motion": "The person holds a completely blank, unimpressed stare into the camera, blinks once very slowly, does not move otherwise.",
+   "camera": "static camera, very slow push-in",
+   "line": "",
+   "effect": "none",
+   "effect_at": 0.0,
+   "frames": 81,
+   "vibe": "reaction",
+   "captions": [
+    {
+     "top": "when the group chat says",
+     "bottom": "\"quick question\""
+    },
+    {
+     "top": "me reading the terms",
+     "bottom": "after clicking agree"
+    },
+    {
+     "top": "POV:",
+     "bottom": "you said \"we should hang out\" and they said \"when?\""
+    },
+    {
+     "top": "my face when",
+     "bottom": "the meeting could've been an email"
+    },
+    {
+     "top": "nobody:",
+     "bottom": "me at 3am: hmm"
+    },
+    {
+     "top": "me waiting for",
+     "bottom": "the microwave to hit 0:00"
+    }
+   ]
+  },
+  {
+   "key": "look_back",
+   "label": "The Look-Back",
+   "emoji": "👀",
+   "scene": "Put the person from image 1 walking on a sunny city sidewalk, medium shot from the front, mid-stride, head starting to turn over their shoulder, casual outfit.",
+   "motion": "The person walks forward, then turns their head all the way back over their shoulder to stare at something off-screen with exaggerated interest, mouth slightly open, eyebrows up.",
+   "camera": "handheld tracking shot walking backwards in front of them",
+   "line": "",
+   "effect": "none",
+   "effect_at": 0.0,
+   "frames": 81,
+   "vibe": "chaos",
+   "captions": [
+    {
+     "top": "me on a diet",
+     "bottom": "walking past a bakery"
+    },
+    {
+     "top": "me",
+     "bottom": "seeing a dog in public"
+    },
+    {
+     "top": "me leaving the party",
+     "bottom": "hearing my song come on"
+    },
+    {
+     "top": "POV:",
+     "bottom": "you said you were going to bed"
+    },
+    {
+     "top": "my budget",
+     "bottom": "walking past a sale"
+    },
+    {
+     "top": "me after saying bye",
+     "bottom": "walking the same way as them"
+    }
+   ]
+  },
+  {
+   "key": "slow_clap",
+   "label": "The Slow Clap",
+   "emoji": "👏",
+   "scene": "Put the person from image 1 standing alone in an empty theater aisle, medium shot, hands raised in front of the chest about to clap, a faint smirk.",
+   "motion": "The person claps slowly and deliberately, four big sarcastic claps, with a deadpan smirk and a slight nod.",
+   "camera": "static camera, slow dolly-in",
+   "line": "",
+   "effect": "none",
+   "effect_at": 0.0,
+   "frames": 81,
+   "vibe": "smug",
+   "captions": [
+    {
+     "top": "congrats on",
+     "bottom": "replying 3 weeks later"
+    },
+    {
+     "top": "wow",
+     "bottom": "you found the mute button"
+    },
+    {
+     "top": "incredible",
+     "bottom": "you remembered my birthday (late)"
+    },
+    {
+     "top": "when the wifi",
+     "bottom": "comes back mid-call"
+    },
+    {
+     "top": "me watching my code",
+     "bottom": "finally compile"
+    },
+    {
+     "top": "the group chat",
+     "bottom": "when someone actually shows up on time"
+    }
+   ]
+  },
+  {
+   "key": "side_eye",
+   "label": "The Side-Eye",
+   "emoji": "🙄",
+   "scene": "Put the person from image 1 sitting on a living-room couch, close-up of head and shoulders facing the camera, warm evening lamp light.",
+   "motion": "The person keeps their head perfectly still while their eyes slowly slide to the side in a suspicious side-eye, one eyebrow lifts, lips press together. Their hands stay down out of frame the whole time and nobody else enters the frame.",
+   "camera": "static locked-off camera",
+   "line": "",
+   "effect": "none",
+   "effect_at": 0.0,
+   "frames": 81,
+   "vibe": "smug",
+   "captions": [
+    {
+     "top": "when someone says",
+     "bottom": "\"I'm 5 minutes away\""
+    },
+    {
+     "top": "me when they say",
+     "bottom": "\"no offense but\""
+    },
+    {
+     "top": "the group chat when",
+     "bottom": "someone says \"real quick\""
+    },
+    {
+     "top": "me hearing",
+     "bottom": "\"this will only take a second\""
+    },
+    {
+     "top": "when the recipe says",
+     "bottom": "\"serves 4\""
+    },
+    {
+     "top": "POV:",
+     "bottom": "they \"forgot\" their wallet again"
+    }
+   ],
+   "negative": "hand entering the frame, extra hands, hands near the face, second person"
+  },
+  {
+   "key": "dramatic_zoom",
+   "label": "Dramatic Zoom",
+   "emoji": "🎬",
+   "scene": "Put the person from image 1 in a kitchen, medium close-up with empty headroom above the head, frozen mid-action holding a mug, moody cinematic side lighting.",
+   "motion": "The person freezes, then their eyes widen in a sudden horrified realization, they slowly lower the mug and stare into the camera.",
+   "camera": "static camera, then a sudden crash zoom on the face",
+   "line": "",
+   "effect": "punch_in",
+   "effect_at": 2.2,
+   "frames": 81,
+   "vibe": "panic",
+   "captions": [
+    {
+     "top": "when you remember",
+     "bottom": "you left the oven on"
+    },
+    {
+     "top": "me remembering",
+     "bottom": "I said \"you too\" to the waiter"
+    },
+    {
+     "top": "when the teacher says",
+     "bottom": "\"pop quiz\""
+    },
+    {
+     "top": "me realizing",
+     "bottom": "it's only Tuesday"
+    },
+    {
+     "top": "when you hit",
+     "bottom": "reply all"
+    },
+    {
+     "top": "POV:",
+     "bottom": "your mic was on the whole time"
+    }
+   ],
+   "caption_layout": "edges"
+  },
+  {
+   "key": "calm_chaos",
+   "label": "Calm in Chaos",
+   "emoji": "☕",
+   "scene": "Put the person from image 1 sitting at a kitchen table holding a coffee cup, medium shot, the room around them is cartoonishly chaotic: papers flying, light smoke, sparks from a toaster, a calm smile.",
+   "motion": "The person calmly sips coffee and smiles while papers swirl through the air and harmless cartoon smoke drifts around the room behind them.",
+   "camera": "static camera, slow push-in",
+   "line": "Everything's under control.",
+   "effect": "none",
+   "effect_at": 0.0,
+   "frames": 81,
+   "vibe": "chaos",
+   "captions": [
+    {
+     "top": "me at 4:59 pm",
+     "bottom": "on a Friday"
+    },
+    {
+     "top": "me pretending",
+     "bottom": "I have my life together"
+    },
+    {
+     "top": "the group project",
+     "bottom": "the night before"
+    },
+    {
+     "top": "me at work",
+     "bottom": "after 3 coffees"
+    },
+    {
+     "top": "POV:",
+     "bottom": "you said \"how hard can it be\""
+    },
+    {
+     "top": "my inbox",
+     "bottom": "and me"
+    }
+   ]
+  },
+  {
+   "key": "dramatic_turn",
+   "label": "The Dramatic Turn",
+   "emoji": "🐹",
+   "scene": "Put the person from image 1 in a dim room, tight close-up with the head turned three-quarters away from the camera, dramatic rim light.",
+   "motion": "The person snaps their head toward the camera with a wide-eyed, intense, dramatic look and freezes.",
+   "camera": "static extreme close-up, quick push-in at the turn",
+   "line": "",
+   "effect": "punch_in",
+   "effect_at": 1.2,
+   "frames": 81,
+   "vibe": "panic",
+   "captions": [
+    {
+     "top": "",
+     "bottom": "wait... what?"
+    },
+    {
+     "top": "when someone says",
+     "bottom": "\"we need to talk\""
+    },
+    {
+     "top": "me hearing my name",
+     "bottom": "in a conversation I'm not in"
+    },
+    {
+     "top": "when the snack bag",
+     "bottom": "rustles in another room"
+    },
+    {
+     "top": "POV:",
+     "bottom": "someone said \"spoilers\""
+    },
+    {
+     "top": "me when",
+     "bottom": "the boss says \"quick sync?\""
+    }
+   ]
+  },
+  {
+   "key": "mind_blown",
+   "label": "Mind Blown",
+   "emoji": "🤯",
+   "scene": "Put the person from image 1 in a colorful living room, medium shot, fingertips touching their temples, eyes wide.",
+   "motion": "The person touches their temples, then flings their hands outward miming their head exploding while bright confetti bursts around them.",
+   "camera": "static camera, slight shake at the burst",
+   "line": "",
+   "effect": "shake",
+   "effect_at": 1.8,
+   "frames": 81,
+   "vibe": "wholesome",
+   "captions": [
+    {
+     "top": "when the sequel",
+     "bottom": "is actually good"
+    },
+    {
+     "top": "me finding",
+     "bottom": "money in my old jacket"
+    },
+    {
+     "top": "when you learn",
+     "bottom": "you can pause the microwave"
+    },
+    {
+     "top": "me realizing",
+     "bottom": "naps are free"
+    },
+    {
+     "top": "POV:",
+     "bottom": "the update fixed the bug"
+    },
+    {
+     "top": "when the group chat",
+     "bottom": "finally agrees on a date"
+    }
+   ]
+  },
+  {
+   "key": "nope_exit",
+   "label": "The Nope Exit",
+   "emoji": "🚪",
+   "scene": "Put the person from image 1 standing in an office hallway facing the camera, full upper body, holding a laptop, neutral face.",
+   "motion": "The person looks at the camera, stops, slowly shakes their head no, then quietly backs away and walks out of frame.",
+   "camera": "static wide camera",
+   "line": "",
+   "effect": "none",
+   "effect_at": 0.0,
+   "frames": 81,
+   "vibe": "panic",
+   "captions": [
+    {
+     "top": "me seeing",
+     "bottom": "a 2-hour meeting invite"
+    },
+    {
+     "top": "me when",
+     "bottom": "the party gets a karaoke machine"
+    },
+    {
+     "top": "when they say",
+     "bottom": "\"can I ask you a favor?\""
+    },
+    {
+     "top": "me seeing",
+     "bottom": "the group project chat"
+    },
+    {
+     "top": "POV:",
+     "bottom": "you saw 47 unread messages"
+    },
+    {
+     "top": "me when",
+     "bottom": "someone says \"let's go around and introduce ourselves\""
+    }
+   ]
+  },
+  {
+   "key": "victory_dance",
+   "label": "Tiny Victory Dance",
+   "emoji": "🕺",
+   "scene": "Put the person from image 1 sitting at a desk with a laptop, medium-wide shot with the whole upper body in frame, fists raised in a small victory pose, big grin.",
+   "motion": "The person does a big, proud shoulder-shimmy victory dance in the chair, bouncing side to side, grinning, both fists pumping up and down repeatedly.",
+   "camera": "static camera",
+   "line": "",
+   "effect": "boomerang",
+   "effect_at": 0.0,
+   "frames": 81,
+   "vibe": "wholesome",
+   "captions": [
+    {
+     "top": "when the code",
+     "bottom": "works on the first try"
+    },
+    {
+     "top": "me after",
+     "bottom": "replying to one email"
+    },
+    {
+     "top": "when you",
+     "bottom": "parallel park first try"
+    },
+    {
+     "top": "me when",
+     "bottom": "the food arrives"
+    },
+    {
+     "top": "POV:",
+     "bottom": "you didn't hit snooze"
+    },
+    {
+     "top": "me when",
+     "bottom": "plans get cancelled"
+    }
+   ],
+   "caption_layout": "top"
+  },
+  {
+   "key": "confident_explainer",
+   "label": "Overconfident Explainer",
+   "emoji": "🧑‍🏫",
+   "scene": "Put the person from image 1 standing next to a whiteboard covered in messy arrows and circles, medium shot, pointing at the board, very confident expression.",
+   "motion": "The person points at the whiteboard and explains with total confidence, nodding, talking to the camera.",
+   "camera": "static camera",
+   "line": "So as you can see, it all makes perfect sense.",
+   "effect": "none",
+   "effect_at": 0.0,
+   "frames": 81,
+   "vibe": "smug",
+   "captions": [
+    {
+     "top": "me explaining",
+     "bottom": "my 3 am business idea"
+    },
+    {
+     "top": "me explaining",
+     "bottom": "why I need another plant"
+    },
+    {
+     "top": "me in the group chat",
+     "bottom": "after one documentary"
+    },
+    {
+     "top": "POV:",
+     "bottom": "you watched one tutorial"
+    },
+    {
+     "top": "me explaining",
+     "bottom": "my sleep schedule"
+    },
+    {
+     "top": "me explaining",
+     "bottom": "my 47 open tabs"
+    }
+   ]
+  }
+ ]
+}

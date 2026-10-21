@@ -1,0 +1,20 @@
+<!--
+  MC logo (final): flat silhouette of the author's own portrait (Oroku Saki, @Tony_Omega) + "MC." with a red period.
+  Master sprites: assets/brand/mc_logo_dark.png / mc_logo_light.png (made by mockups/logo/v3/make.py);
+  web assets derived by scripts/make_brand.py.
+  Header version: the figure (a single-color CSS mask, so it takes the theme's --ink and flips with the
+  dark/light toggle automatically) beside "MC." set in Anton, with "main character" under it.
+  {{brand:FILE}} is replaced with a data URI of assets/brand/FILE when the theme loads.
+  Swap the whole logo by editing this one file, or point MC_LOGO at another file of the same shape.
+-->
+<style>
+.mc-wordmark{display:inline-flex;align-items:flex-end;gap:10px;color:var(--ink);text-decoration:none;line-height:1}
+.mc-wordmark .fig{display:block;width:26px;height:72px;background:currentColor;
+  -webkit-mask:url("{{brand:mc_figure_mask_160.png}}") center bottom/contain no-repeat;
+          mask:url("{{brand:mc_figure_mask_160.png}}") center bottom/contain no-repeat}
+.mc-wordmark .words{display:flex;flex-direction:column;gap:3px;padding-bottom:2px}
+.mc-wordmark .mark{font-family:'Anton','Archivo',sans-serif;font-size:40px;letter-spacing:.5px;line-height:.9}
+.mc-wordmark .mark i{font-style:normal;color:var(--accent)}
+.mc-wordmark .sub{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.3px}
+</style>
+<span class="mc-wordmark" role="img" aria-label="MC: Main Character" title="mc = main character."><span class="fig" aria-hidden="true"></span><span class="words"><span class="mark">MC<i>.</i></span><span class="sub">main character</span></span></span>
